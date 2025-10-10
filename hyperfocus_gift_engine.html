@@ -1,0 +1,446 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperfocus Gift Engine - Interactive TikTok Live Effects</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #000011;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            color: white;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Control panel for testing (hide for streaming) */
+        .control-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 2px solid #8A2BE2;
+            z-index: 1000;
+            display: none; /* Hidden by default for streaming */
+        }
+
+        .control-panel.show {
+            display: block;
+        }
+
+        .status {
+            margin-bottom: 15px;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 10px;
+            background: #ff4444;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background: #44ff44;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .test-buttons {
+            margin-top: 15px;
+        }
+
+        .test-btn {
+            background: #8A2BE2;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .test-btn:hover {
+            background: #9932CC;
+        }
+
+        /* Gift notification overlay */
+        .gift-notification {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: rgba(138, 43, 226, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            z-index: 999;
+            opacity: 0;
+            transition: all 0.5s ease;
+            max-width: 300px;
+        }
+
+        .gift-notification.show {
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+        }
+
+        .gift-user {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .gift-details {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Hyperfocus branding */
+        .hyperfocus-brand {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            color: #8A2BE2;
+            font-size: 14px;
+            opacity: 0.7;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div id="canvas-container"></div>
+
+    <!-- Control Panel for Testing -->
+    <div class="control-panel" id="controlPanel">
+        <div class="status">
+            <span class="status-dot" id="connectionStatus"></span>
+            <span id="connectionText">Disconnected from TikTok Live</span>
+        </div>
+
+        <div id="giftStats">
+            Total Gifts: <span id="giftCount">0</span><br>
+            Active Effects: <span id="effectCount">0</span>
+        </div>
+
+        <div class="test-buttons">
+            <h4>Test Effects:</h4>
+            <button class="test-btn" onclick="testGift('Rose')">Rose 🌹</button>
+            <button class="test-btn" onclick="testGift('Heart')">Heart 💖</button>
+            <button class="test-btn" onclick="testGift('Universe')">Universe 🌌</button>
+            <button class="test-btn" onclick="testGift('Coins')">Coins 🪙</button>
+        </div>
+
+        <div style="margin-top: 15px;">
+            <button class="test-btn" onclick="togglePanel()">Hide Panel</button>
+        </div>
+    </div>
+
+    <!-- Gift Notification Overlay -->
+    <div class="gift-notification" id="giftNotification">
+        <div class="gift-user" id="giftUser"></div>
+        <div class="gift-details" id="giftDetails"></div>
+    </div>
+
+    <!-- Hyperfocus Branding -->
+    <div class="hyperfocus-brand">
+        Hyperfocus Zone ♾️ | BROski$ Interactive Engine
+    </div>
+
+    <!-- Load Three.js and WebGPU renderer -->
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.173.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.173.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <script type="module">
+        import { HyperfocusVisualEngine } from './hyperfocus_visual_engine.js';
+
+        class HyperfocusGiftEngine {
+            constructor() {
+                this.websocket = null;
+                this.visualEngine = null;
+                this.isConnected = false;
+                this.giftCount = 0;
+                this.effectCount = 0;
+
+                this.init();
+            }
+
+            async init() {
+                console.log("🚀 Initializing Hyperfocus Gift Engine...");
+
+                // Initialize visual engine
+                const container = document.getElementById('canvas-container');
+                this.visualEngine = new HyperfocusVisualEngine(container);
+
+                // Connect to WebSocket server
+                this.connectWebSocket();
+
+                // Set up keyboard shortcuts
+                this.setupKeyboardShortcuts();
+
+                // Handle window resize
+                window.addEventListener('resize', () => {
+                    this.visualEngine.onWindowResize();
+                });
+
+                console.log("✅ Hyperfocus Gift Engine initialized!");
+            }
+
+            connectWebSocket() {
+                console.log("🔌 Connecting to TikTok Gift Listener...");
+
+                try {
+                    this.websocket = new WebSocket('ws://localhost:8765');
+
+                    this.websocket.onopen = () => {
+                        console.log("✅ Connected to TikTok Live stream!");
+                        this.isConnected = true;
+                        this.updateConnectionStatus(true);
+                    };
+
+                    this.websocket.onmessage = (event) => {
+                        const data = JSON.parse(event.data);
+                        this.handleWebSocketMessage(data);
+                    };
+
+                    this.websocket.onclose = () => {
+                        console.log("❌ Disconnected from TikTok Live stream");
+                        this.isConnected = false;
+                        this.updateConnectionStatus(false);
+
+                        // Attempt to reconnect after 5 seconds
+                        setTimeout(() => {
+                            if (!this.isConnected) {
+                                console.log("🔄 Attempting to reconnect...");
+                                this.connectWebSocket();
+                            }
+                        }, 5000);
+                    };
+
+                    this.websocket.onerror = (error) => {
+                        console.error("❌ WebSocket error:", error);
+                        this.updateConnectionStatus(false);
+                    };
+
+                } catch (error) {
+                    console.error("❌ Failed to connect to WebSocket:", error);
+                    this.updateConnectionStatus(false);
+                }
+            }
+
+            handleWebSocketMessage(data) {
+                console.log("📨 Received message:", data);
+
+                switch (data.event) {
+                    case 'gift_received':
+                        this.handleGift(data);
+                        break;
+                    case 'stream_connected':
+                        console.log(`🎥 Connected to ${data.user}'s stream!`);
+                        break;
+                    case 'comment':
+                        console.log(`💬 ${data.user}: ${data.message}`);
+                        break;
+                    default:
+                        console.log("ℹ️ Unknown event:", data.event);
+                }
+            }
+
+            handleGift(giftData) {
+                console.log("🎁 Gift received:", giftData);
+
+                // Update statistics
+                this.giftCount += giftData.gift.repeat_count;
+                this.effectCount++;
+                this.updateStats();
+
+                // Show gift notification
+                this.showGiftNotification(giftData);
+
+                // Trigger visual effect
+                if (this.visualEngine) {
+                    this.visualEngine.handleGift(giftData);
+                }
+
+                // Play celebration sound (optional)
+                this.playCelebrationSound(giftData.effect.sound);
+            }
+
+            showGiftNotification(giftData) {
+                const notification = document.getElementById('giftNotification');
+                const userElement = document.getElementById('giftUser');
+                const detailsElement = document.getElementById('giftDetails');
+
+                userElement.textContent = `${giftData.user.username} sent ${giftData.gift.repeat_count}x ${giftData.gift.name}!`;
+                detailsElement.textContent = `Effect: ${giftData.effect.type} (${giftData.effect.particles} particles)`;
+
+                notification.classList.add('show');
+
+                // Hide notification after 3 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+
+            playCelebrationSound(soundName) {
+                // TODO: Implement Web Audio API sounds
+                console.log(`🔊 Playing sound: ${soundName}`);
+            }
+
+            updateConnectionStatus(connected) {
+                const statusDot = document.getElementById('connectionStatus');
+                const statusText = document.getElementById('connectionText');
+
+                if (connected) {
+                    statusDot.classList.add('connected');
+                    statusText.textContent = 'Connected to TikTok Live ✨';
+                } else {
+                    statusDot.classList.remove('connected');
+                    statusText.textContent = 'Disconnected - Attempting to reconnect...';
+                }
+            }
+
+            updateStats() {
+                document.getElementById('giftCount').textContent = this.giftCount;
+                document.getElementById('effectCount').textContent = this.visualEngine ? this.visualEngine.activeEffects.length : 0;
+            }
+
+            setupKeyboardShortcuts() {
+                document.addEventListener('keydown', (event) => {
+                    switch (event.key.toLowerCase()) {
+                        case 'h':
+                            this.toggleControlPanel();
+                            break;
+                        case '1':
+                            this.testGift('Rose');
+                            break;
+                        case '2':
+                            this.testGift('Heart');
+                            break;
+                        case '3':
+                            this.testGift('Universe');
+                            break;
+                        case '4':
+                            this.testGift('Coins');
+                            break;
+                    }
+                });
+            }
+
+            toggleControlPanel() {
+                const panel = document.getElementById('controlPanel');
+                panel.classList.toggle('show');
+            }
+
+            // Test function for manual gift triggering
+            testGift(giftName) {
+                console.log(`🧪 Testing ${giftName} effect...`);
+
+                const testGiftData = {
+                    event: 'gift_received',
+                    gift: {
+                        name: giftName,
+                        repeat_count: 1,
+                        is_streaking: false
+                    },
+                    user: {
+                        username: 'test_user',
+                        nickname: 'Test User'
+                    },
+                    effect: this.getEffectConfig(giftName),
+                    timestamp: Date.now()
+                };
+
+                this.handleGift(testGiftData);
+            }
+
+            getEffectConfig(giftName) {
+                const configs = {
+                    "Rose": {
+                        "type": "shooting_star",
+                        "intensity": 3,
+                        "color": "#FF69B4",
+                        "particles": 500,
+                        "sound": "cosmic_chime"
+                    },
+                    "Heart": {
+                        "type": "dopamine_burst", 
+                        "intensity": 5,
+                        "color": "#FF0080",
+                        "particles": 1000,
+                        "sound": "positive_affirmation"
+                    },
+                    "Coins": {
+                        "type": "focus_coin_shower",
+                        "intensity": 2,
+                        "color": "#FFD700",
+                        "particles": 300,
+                        "sound": "coin_collect"
+                    },
+                    "Universe": {
+                        "type": "hyperfocus_supernova",
+                        "intensity": 10,
+                        "color": "#8A2BE2",
+                        "particles": 5000,
+                        "sound": "universe_explosion"
+                    }
+                };
+
+                return configs[giftName] || configs["Heart"];
+            }
+        }
+
+        // Global functions for HTML buttons
+        window.testGift = (giftName) => {
+            if (window.giftEngine) {
+                window.giftEngine.testGift(giftName);
+            }
+        };
+
+        window.togglePanel = () => {
+            if (window.giftEngine) {
+                window.giftEngine.toggleControlPanel();
+            }
+        };
+
+        // Initialize the engine when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            window.giftEngine = new HyperfocusGiftEngine();
+
+            // Show control panel initially for testing
+            setTimeout(() => {
+                document.getElementById('controlPanel').classList.add('show');
+                console.log("💡 Press 'H' to hide/show control panel");
+                console.log("💡 Press 1-4 keys to test different gift effects");
+            }, 2000);
+        });
+
+    </script>
+</body>
+</html>

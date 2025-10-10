@@ -1,0 +1,963 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperfocus Gift Engine - Investor Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0d2e 50%, #16213e 100%);
+            font-family: 'Arial', 'Helvetica Neue', sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Header Section */
+        .demo-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            z-index: 1000;
+            border-bottom: 2px solid #8A2BE2;
+        }
+
+        .demo-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #8A2BE2;
+            text-align: center;
+            text-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+        }
+
+        .demo-subtitle {
+            font-size: 14px;
+            color: #00CED1;
+            text-align: center;
+            margin-top: 5px;
+            opacity: 0.9;
+        }
+
+        /* Main Demo Container */
+        .demo-container {
+            display: flex;
+            height: 100vh;
+            margin-top: 80px;
+        }
+
+        /* Left Panel - 3D Effects Demo */
+        .effects-panel {
+            flex: 2;
+            position: relative;
+            background: #000011;
+            border-right: 2px solid #8A2BE2;
+        }
+
+        .effects-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .effects-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(138, 43, 226, 0.1);
+            border: 1px solid #8A2BE2;
+            border-radius: 10px;
+            padding: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        .effect-title {
+            font-size: 18px;
+            color: #FFD700;
+            margin-bottom: 10px;
+        }
+
+        .effect-stats {
+            font-size: 12px;
+            color: #00CED1;
+        }
+
+        /* Right Panel - Controls & Info */
+        .control-panel {
+            flex: 1;
+            background: linear-gradient(180deg, #1a0d2e 0%, #2d1b3d 100%);
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* Gift Simulation Section */
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(138, 43, 226, 0.1);
+            border-radius: 15px;
+            border: 1px solid rgba(138, 43, 226, 0.3);
+        }
+
+        .section-title {
+            font-size: 20px;
+            color: #FFD700;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .gift-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .gift-button {
+            padding: 15px;
+            background: linear-gradient(45deg, #8A2BE2, #9932CC);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+        }
+
+        .gift-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 25px rgba(138, 43, 226, 0.5);
+            background: linear-gradient(45deg, #9932CC, #BA55D3);
+        }
+
+        .gift-button.rose { background: linear-gradient(45deg, #FF69B4, #FF1493); }
+        .gift-button.heart { background: linear-gradient(45deg, #FF0080, #DC143C); }
+        .gift-button.universe { background: linear-gradient(45deg, #8A2BE2, #4B0082); }
+        .gift-button.coins { background: linear-gradient(45deg, #FFD700, #FFA500); }
+
+        .gift-icon {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .gift-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Stats Dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: rgba(0, 206, 209, 0.2);
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 206, 209, 0.3);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00CED1;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #ccc;
+            margin-top: 3px;
+        }
+
+        /* Mobile Preview Section */
+        .mobile-preview {
+            text-align: center;
+            position: relative;
+        }
+
+        .phone-mockup {
+            width: 200px;
+            height: 350px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #000011 0%, #1a0d2e 100%);
+            border-radius: 25px;
+            border: 4px solid #8A2BE2;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.4);
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #2d1b3d 0%, #000011 100%);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mobile-effect {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #8A2BE2, #4B0082);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            animation: pulse 2s infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+        }
+
+        .mobile-controls {
+            display: flex;
+            justify-content: space-around;
+            width: 80%;
+            margin-top: 10px;
+        }
+
+        .mobile-btn {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.8);
+            border: 1px solid #FFD700;
+        }
+
+        /* Investor Features List */
+        .features-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .features-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+            color: #00CED1;
+            font-size: 13px;
+        }
+
+        .features-list li:before {
+            content: "✨ ";
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        /* Value Proposition */
+        .value-prop {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+
+        .value-number {
+            font-size: 28px;
+            display: block;
+        }
+
+        .value-text {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Floating Gift Notifications */
+        .gift-notification {
+            position: absolute;
+            top: 50px;
+            right: 30px;
+            background: rgba(138, 43, 226, 0.9);
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 2px solid #8A2BE2;
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 0.5s ease;
+            z-index: 999;
+            min-width: 250px;
+        }
+
+        .gift-notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification-user {
+            font-weight: bold;
+            color: #FFD700;
+            font-size: 14px;
+        }
+
+        .notification-gift {
+            color: #00CED1;
+            font-size: 12px;
+            margin-top: 3px;
+        }
+
+        /* Tech Stack Indicator */
+        .tech-stack {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid #00CED1;
+        }
+
+        .tech-item {
+            color: #00CED1;
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+
+        /* Auto-Demo Controls */
+        .auto-demo-controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .auto-demo-btn {
+            background: linear-gradient(45deg, #00CED1, #20B2AA);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .auto-demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 206, 209, 0.4);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .demo-container {
+                flex-direction: column;
+            }
+
+            .effects-panel {
+                height: 60vh;
+            }
+
+            .control-panel {
+                height: 40vh;
+            }
+        }
+
+        /* Animation for particles */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-10px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        .floating-particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: #8A2BE2;
+            border-radius: 50%;
+            animation: float 6s infinite linear;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <!-- Demo Header -->
+    <div class="demo-header">
+        <div class="demo-title">🌌 Hyperfocus Gift Engine - Investor Demo</div>
+        <div class="demo-subtitle">Next-Generation Interactive TikTok Live Streaming with WebGPU & Neurodivergent Accessibility</div>
+    </div>
+
+    <!-- Main Demo Container -->
+    <div class="demo-container">
+        <!-- Left Panel - 3D Effects Demo -->
+        <div class="effects-panel">
+            <canvas class="effects-canvas" id="demoCanvas"></canvas>
+
+            <!-- Effects Info Overlay -->
+            <div class="effects-overlay">
+                <div class="effect-title">🚀 Live 3D WebGPU Effects</div>
+                <div class="effect-stats">
+                    <div>Active Particles: <span id="particleCount">0</span></div>
+                    <div>GPU Utilization: <span id="gpuUsage">Optimized</span></div>
+                    <div>Frame Rate: <span id="frameRate">60 FPS</span></div>
+                </div>
+            </div>
+
+            <!-- Gift Notification -->
+            <div class="gift-notification" id="giftNotification">
+                <div class="notification-user" id="notificationUser">Investor_Demo sent Rose!</div>
+                <div class="notification-gift" id="notificationGift">Triggered: Shooting Star Effect (500 particles)</div>
+            </div>
+
+            <!-- Tech Stack Indicator -->
+            <div class="tech-stack">
+                <div class="tech-item">⚡ WebGPU Rendering</div>
+                <div class="tech-item">🌐 Real-time WebSocket</div>
+                <div class="tech-item">📱 React Native Ready</div>
+                <div class="tech-item">🎯 Neurodivergent UX</div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Controls & Info -->
+        <div class="control-panel">
+            <!-- Gift Simulation Section -->
+            <div class="section">
+                <div class="section-title">🎁 Simulate TikTok Live Gifts</div>
+                <div class="gift-buttons">
+                    <button class="gift-button rose" onclick="simulateGift('Rose')">
+                        <span class="gift-icon">🌹</span>
+                        <span class="gift-label">Rose Gift</span>
+                    </button>
+                    <button class="gift-button heart" onclick="simulateGift('Heart')">
+                        <span class="gift-icon">💖</span>
+                        <span class="gift-label">Heart Gift</span>
+                    </button>
+                    <button class="gift-button universe" onclick="simulateGift('Universe')">
+                        <span class="gift-icon">🌌</span>
+                        <span class="gift-label">Universe Gift</span>
+                    </button>
+                    <button class="gift-button coins" onclick="simulateGift('Coins')">
+                        <span class="gift-icon">🪙</span>
+                        <span class="gift-label">Coin Gift</span>
+                    </button>
+                </div>
+
+                <div class="auto-demo-controls">
+                    <button class="auto-demo-btn" onclick="startAutoDemo()">▶️ Auto Demo</button>
+                    <button class="auto-demo-btn" onclick="stopAutoDemo()">⏹️ Stop</button>
+                </div>
+            </div>
+
+            <!-- Live Stats Dashboard -->
+            <div class="section">
+                <div class="section-title">📊 Real-Time Analytics</div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalGifts">0</div>
+                        <div class="stat-label">Total Gifts</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="activeEffects">0</div>
+                        <div class="stat-label">Active Effects</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="viewerCount">247</div>
+                        <div class="stat-label">Viewers</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" id="engagement">98%</div>
+                        <div class="stat-label">Engagement</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile App Preview -->
+            <div class="section">
+                <div class="section-title">📱 Mobile React Native App</div>
+                <div class="mobile-preview">
+                    <div class="phone-mockup">
+                        <div class="phone-screen">
+                            <div class="mobile-effect" id="mobileEffect">🌟</div>
+                            <div style="color: #8A2BE2; font-size: 12px; margin-bottom: 10px;">WebGPU Mobile</div>
+                            <div class="mobile-controls">
+                                <div class="mobile-btn"></div>
+                                <div class="mobile-btn"></div>
+                                <div class="mobile-btn"></div>
+                            </div>
+                            <div style="color: #00CED1; font-size: 10px; margin-top: 15px;">Touch • Haptic • Voice</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Features -->
+            <div class="section">
+                <div class="section-title">✨ Key Features</div>
+                <ul class="features-list">
+                    <li>Real-time TikTok Live gift detection</li>
+                    <li>WebGPU 3D particle systems (5000+ particles)</li>
+                    <li>Mobile haptic feedback integration</li>
+                    <li>Neurodivergent accessibility design</li>
+                    <li>Cross-platform (Web + Mobile)</li>
+                    <li>Touch gesture controls</li>
+                    <li>Adaptive quality optimization</li>
+                    <li>Social sharing capabilities</li>
+                </ul>
+            </div>
+
+            <!-- Value Proposition -->
+            <div class="value-prop">
+                <span class="value-number">$2.8B</span>
+                <span class="value-text">Live Streaming Market Size by 2025</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Background floating particles -->
+    <div id="backgroundParticles"></div>
+
+    <script type="module">
+        // Investor Demo JavaScript Engine
+        class InvestorDemo {
+            constructor() {
+                this.canvas = document.getElementById('demoCanvas');
+                this.ctx = null;
+                this.effects = [];
+                this.totalGifts = 0;
+                this.autoDemo = null;
+                this.particleCount = 0;
+                this.animationId = null;
+
+                this.giftConfigs = {
+                    'Rose': {
+                        color: '#FF69B4',
+                        particles: 500,
+                        type: 'shooting_star',
+                        icon: '🌹',
+                        description: 'Shooting Star Effect'
+                    },
+                    'Heart': {
+                        color: '#FF0080', 
+                        particles: 800,
+                        type: 'dopamine_burst',
+                        icon: '💖',
+                        description: 'Dopamine Burst Effect'
+                    },
+                    'Universe': {
+                        color: '#8A2BE2',
+                        particles: 1200,
+                        type: 'supernova',
+                        icon: '🌌',
+                        description: 'Supernova Galaxy Effect'
+                    },
+                    'Coins': {
+                        color: '#FFD700',
+                        particles: 600,
+                        type: 'coin_shower',
+                        icon: '🪙',
+                        description: 'Golden Coin Shower'
+                    }
+                };
+
+                this.init();
+            }
+
+            init() {
+                console.log("🚀 Initializing Investor Demo...");
+                this.setupCanvas();
+                this.createBackgroundParticles();
+                this.startRenderLoop();
+
+                // Start with a welcome effect
+                setTimeout(() => {
+                    this.simulateGift('Universe');
+                }, 1000);
+
+                console.log("✅ Investor Demo ready!");
+            }
+
+            setupCanvas() {
+                this.canvas.width = this.canvas.offsetWidth;
+                this.canvas.height = this.canvas.offsetHeight;
+
+                // Try to get WebGPU context, fallback to 2D
+                this.ctx = this.canvas.getContext('2d');
+
+                // Set up canvas styling
+                this.ctx.fillStyle = '#000011';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Handle resize
+                window.addEventListener('resize', () => {
+                    this.canvas.width = this.canvas.offsetWidth;
+                    this.canvas.height = this.canvas.offsetHeight;
+                });
+            }
+
+            simulateGift(giftType) {
+                console.log(`🎁 Simulating ${giftType} gift for investors`);
+
+                const config = this.giftConfigs[giftType];
+                if (!config) return;
+
+                // Update stats
+                this.totalGifts++;
+                this.updateStats();
+
+                // Show notification
+                this.showGiftNotification(giftType, config);
+
+                // Create visual effect
+                this.createEffect(giftType, config);
+
+                // Update mobile preview
+                this.updateMobilePreview(config.icon);
+            }
+
+            createEffect(giftType, config) {
+                const effect = {
+                    type: config.type,
+                    particles: [],
+                    startTime: Date.now(),
+                    duration: 4000,
+                    color: config.color,
+                    giftType: giftType
+                };
+
+                // Generate particles based on effect type
+                switch (config.type) {
+                    case 'shooting_star':
+                        this.createShootingStarParticles(effect, config.particles);
+                        break;
+                    case 'dopamine_burst':
+                        this.createBurstParticles(effect, config.particles);
+                        break;
+                    case 'supernova':
+                        this.createSupernovaParticles(effect, config.particles);
+                        break;
+                    case 'coin_shower':
+                        this.createCoinShowerParticles(effect, config.particles);
+                        break;
+                }
+
+                this.effects.push(effect);
+                this.particleCount += config.particles;
+
+                console.log(`✨ Created ${config.particles} particles for ${giftType}`);
+            }
+
+            createShootingStarParticles(effect, count) {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+
+                for (let i = 0; i < count; i++) {
+                    const t = i / count;
+                    effect.particles.push({
+                        x: -100 + t * (this.canvas.width + 200),
+                        y: centerY + Math.sin(t * Math.PI * 2) * 100,
+                        vx: 3,
+                        vy: Math.cos(t * Math.PI * 2) * 2,
+                        size: Math.random() * 3 + 1,
+                        opacity: 1,
+                        trail: []
+                    });
+                }
+            }
+
+            createBurstParticles(effect, count) {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+
+                for (let i = 0; i < count; i++) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 5 + 2;
+                    effect.particles.push({
+                        x: centerX,
+                        y: centerY,
+                        vx: Math.cos(angle) * speed,
+                        vy: Math.sin(angle) * speed,
+                        size: Math.random() * 4 + 2,
+                        opacity: 1,
+                        decay: 0.02
+                    });
+                }
+            }
+
+            createSupernovaParticles(effect, count) {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+
+                // Create multiple rings
+                for (let ring = 0; ring < 4; ring++) {
+                    const ringParticles = Math.floor(count / 4);
+                    const radius = 50 + ring * 40;
+
+                    for (let i = 0; i < ringParticles; i++) {
+                        const angle = (i / ringParticles) * Math.PI * 2;
+                        effect.particles.push({
+                            x: centerX + Math.cos(angle) * radius,
+                            y: centerY + Math.sin(angle) * radius,
+                            angle: angle,
+                            radius: radius,
+                            baseRadius: radius,
+                            angularVelocity: 0.02,
+                            size: Math.random() * 3 + 2,
+                            opacity: 1,
+                            ring: ring
+                        });
+                    }
+                }
+            }
+
+            createCoinShowerParticles(effect, count) {
+                for (let i = 0; i < count; i++) {
+                    effect.particles.push({
+                        x: Math.random() * this.canvas.width,
+                        y: -50 - Math.random() * 100,
+                        vx: (Math.random() - 0.5) * 2,
+                        vy: Math.random() * 3 + 2,
+                        size: Math.random() * 5 + 3,
+                        opacity: 1,
+                        spin: Math.random() * 0.2
+                    });
+                }
+            }
+
+            updateEffects() {
+                const currentTime = Date.now();
+
+                this.effects = this.effects.filter(effect => {
+                    const elapsed = currentTime - effect.startTime;
+                    const progress = elapsed / effect.duration;
+
+                    if (progress >= 1) {
+                        this.particleCount -= effect.particles.length;
+                        return false;
+                    }
+
+                    // Update particles based on effect type
+                    switch (effect.type) {
+                        case 'shooting_star':
+                            this.updateShootingStarEffect(effect, progress);
+                            break;
+                        case 'dopamine_burst':
+                            this.updateBurstEffect(effect, progress);
+                            break;
+                        case 'supernova':
+                            this.updateSupernovaEffect(effect, progress);
+                            break;
+                        case 'coin_shower':
+                            this.updateCoinShowerEffect(effect, progress);
+                            break;
+                    }
+
+                    return true;
+                });
+
+                this.updateStats();
+            }
+
+            updateShootingStarEffect(effect, progress) {
+                effect.particles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.opacity = Math.max(0, 1 - progress);
+                });
+            }
+
+            updateBurstEffect(effect, progress) {
+                effect.particles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.vy += 0.1; // gravity
+                    particle.opacity = Math.max(0, 1 - progress);
+                });
+            }
+
+            updateSupernovaEffect(effect, progress) {
+                const centerX = this.canvas.width / 2;
+                const centerY = this.canvas.height / 2;
+
+                effect.particles.forEach(particle => {
+                    particle.angle += particle.angularVelocity;
+                    particle.radius = particle.baseRadius * (1 + progress * 2);
+                    particle.x = centerX + Math.cos(particle.angle) * particle.radius;
+                    particle.y = centerY + Math.sin(particle.angle) * particle.radius;
+                    particle.opacity = Math.max(0, 1 - progress * 0.7);
+                });
+            }
+
+            updateCoinShowerEffect(effect, progress) {
+                effect.particles.forEach(particle => {
+                    particle.x += particle.vx;
+                    particle.y += particle.vy;
+                    particle.spin += 0.1;
+                    particle.opacity = Math.max(0, 1 - progress);
+                });
+            }
+
+            render() {
+                // Clear canvas with gradient background
+                const gradient = this.ctx.createLinearGradient(0, 0, 0, this.canvas.height);
+                gradient.addColorStop(0, '#000011');
+                gradient.addColorStop(0.5, '#1a0d2e');
+                gradient.addColorStop(1, '#16213e');
+
+                this.ctx.fillStyle = gradient;
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+                // Render all effects
+                this.effects.forEach(effect => {
+                    this.renderEffect(effect);
+                });
+            }
+
+            renderEffect(effect) {
+                this.ctx.save();
+
+                effect.particles.forEach(particle => {
+                    this.ctx.save();
+                    this.ctx.globalAlpha = particle.opacity;
+
+                    // Set particle color
+                    this.ctx.fillStyle = effect.color;
+                    this.ctx.shadowColor = effect.color;
+                    this.ctx.shadowBlur = 10;
+
+                    // Draw particle
+                    this.ctx.beginPath();
+                    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+                    this.ctx.fill();
+
+                    this.ctx.restore();
+                });
+
+                this.ctx.restore();
+            }
+
+            showGiftNotification(giftType, config) {
+                const notification = document.getElementById('giftNotification');
+                const userEl = document.getElementById('notificationUser');
+                const giftEl = document.getElementById('notificationGift');
+
+                userEl.textContent = `InvestorDemo sent ${giftType}! 🎉`;
+                giftEl.textContent = `Triggered: ${config.description} (${config.particles} particles)`;
+
+                notification.classList.add('show');
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                }, 3000);
+            }
+
+            updateMobilePreview(icon) {
+                const mobileEffect = document.getElementById('mobileEffect');
+                mobileEffect.textContent = icon;
+                mobileEffect.style.animation = 'none';
+                setTimeout(() => {
+                    mobileEffect.style.animation = 'pulse 2s infinite';
+                }, 10);
+            }
+
+            updateStats() {
+                document.getElementById('totalGifts').textContent = this.totalGifts;
+                document.getElementById('activeEffects').textContent = this.effects.length;
+                document.getElementById('particleCount').textContent = this.particleCount;
+                document.getElementById('viewerCount').textContent = 247 + Math.floor(this.totalGifts * 12);
+
+                // Simulate engagement increase
+                const engagement = Math.min(99, 78 + Math.floor(this.totalGifts * 2));
+                document.getElementById('engagement').textContent = engagement + '%';
+            }
+
+            startRenderLoop() {
+                const loop = () => {
+                    this.updateEffects();
+                    this.render();
+                    this.animationId = requestAnimationFrame(loop);
+                };
+                loop();
+            }
+
+            startAutoDemo() {
+                if (this.autoDemo) return;
+
+                console.log("🎬 Starting auto demo for investors");
+                const giftTypes = ['Rose', 'Heart', 'Universe', 'Coins'];
+                let index = 0;
+
+                this.autoDemo = setInterval(() => {
+                    this.simulateGift(giftTypes[index]);
+                    index = (index + 1) % giftTypes.length;
+                }, 2000);
+            }
+
+            stopAutoDemo() {
+                if (this.autoDemo) {
+                    clearInterval(this.autoDemo);
+                    this.autoDemo = null;
+                    console.log("⏹️ Auto demo stopped");
+                }
+            }
+
+            createBackgroundParticles() {
+                const container = document.getElementById('backgroundParticles');
+
+                for (let i = 0; i < 20; i++) {
+                    const particle = document.createElement('div');
+                    particle.className = 'floating-particle';
+                    particle.style.left = Math.random() * 100 + '%';
+                    particle.style.top = Math.random() * 100 + '%';
+                    particle.style.animationDelay = Math.random() * 6 + 's';
+                    particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+                    container.appendChild(particle);
+                }
+            }
+        }
+
+        // Initialize demo
+        let demo = null;
+
+        window.addEventListener('load', () => {
+            demo = new InvestorDemo();
+        });
+
+        // Global functions for buttons
+        window.simulateGift = (giftType) => {
+            if (demo) {
+                demo.simulateGift(giftType);
+            }
+        };
+
+        window.startAutoDemo = () => {
+            if (demo) {
+                demo.startAutoDemo();
+            }
+        };
+
+        window.stopAutoDemo = () => {
+            if (demo) {
+                demo.stopAutoDemo();
+            }
+        };
+
+        // Auto-start demo after 3 seconds
+        setTimeout(() => {
+            if (demo) {
+                demo.startAutoDemo();
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
