@@ -20,8 +20,7 @@ Based on the latest research on TikTok Live gift psychology and engagement patte
 
 - **Price**: 44,999 coins ($562.48)
 
-- **Why High Engagement**: Ultimate status symbol, viral moment creator
-- **Effect Potential**: Massive supernova explosion with galaxy formation
+- **Why High Engagement**: Ultimate status symbol, viral moment creator- **Effect Potential**: Massive supernova explosion with galaxy formation
 - **Engagement Factor**: 10/10 (Guaranteed massive reaction)
 
 ### 2. **Lion** 🦁 
@@ -142,7 +141,8 @@ Based on the latest research on TikTok Live gift psychology and engagement patte
 
 ## 🚀 REVENUE PSYCHOLOGY
 
-### Why These Gifts Drive Engagement:
+### Why These Gifts Drive Engagement
+
 1. **Status Display** - High-value gifts show community standing
 2. **Streamer Acknowledgment** - Guaranteed reaction and shoutout
 3. **Visual Spectacle** - Creates shareable moments
