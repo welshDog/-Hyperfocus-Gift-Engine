@@ -1,0 +1,585 @@
+Windsurf + Cascade AI Setup for Gift Engine Upgrade 🚀
+Yo BROski! Smart move jumping to Windsurf with Cascade AI and Code Supernova. This combo is absurd for your Gift Engine project. Let me show you exactly how to configure it so Cascade understands your entire upgrade roadmap and can autonomously execute tasks without you re-explaining context every session.
+
+🔥 Step 1: Windsurf Project Setup (5 mins)
+1.1 Open Gift Engine in Windsurf
+bash
+# In Windsurf, open your Gift Engine project folder
+File → Open Folder → /path/to/Gift-Engine
+1.2 Choose Code Supernova Model
+text
+Cascade Panel (bottom right) → Model Selector → code-supernova-1-million
+Why this model? 1 MILLION token context window = reads your entire codebase at once. No file-by-file explaining needed! Plus it's FREE for limited time.​
+
+1.3 Enable Key Features
+text
+Windsurf Settings (bottom right) → Search for:
+- ✅ Turbo Mode (autonomous terminal execution)[254][261]
+- ✅ Auto-Generate Memories (persistent context)[268]
+- ✅ Indexing Engine (full codebase awareness)[240]
+🔥 Step 2: Create Project Rules (.windsurfrules) (10 mins)
+This is THE SECRET SAUCE 🎯. Rules tell Cascade your standards, tech stack, and upgrade goals. Cascade will reference these on every task automatically.​​
+
+2.1 Create .windsurfrules File
+Right-click project root → New File → Name it .windsurfrules
+
+2.2 Paste This Configuration
+text
+# Gift Engine Upgrade Rules v1.0
+# =============================================================
+# These rules guide Cascade through the systematic upgrade of the Gift Engine
+# TikTok gift tracking system to modern 2025 tech stack
+
+## PROJECT CONTEXT
+- **Project Name**: Gift Engine Pro
+- **Type**: TikTok Live gift tracking & automation dashboard
+- **Current Status**: React 18, legacy dependencies, manual testing
+- **Target Stack**: React 19.2, PWA, Three.js, Motion, WebGPU
+
+## UPGRADE ROADMAP PHASES (DO NOT SKIP)
+1. Core modernization: React 19, dependencies, security audit
+2. Real-time dashboard: Live counter, leaderboard, animations
+3. Visual effects: Shaders, Three.js, WebGPU optimization
+4. Smart automation: Event triggers, action executor, visual editor
+5. PWA conversion: Offline support, service worker, mobile
+6. Analytics: Revenue tracking, audience insights, reports
+7. Polish & docs: Accessibility, testing, GitHub prep
+
+## TECH STACK RULES
+
+### Frontend
+- **Framework**: React 19.2 (auto-optimization with React Compiler)
+- **Animations**: Motion (formerly Framer Motion) for hardware-accelerated effects
+- **3D Graphics**: Three.js + WebGPU for GPU acceleration
+- **Shaders**: paper-design/shaders for liquid effects
+- **Charts**: Chart.js for analytics visualizations
+- **UI Builder**: React Flow for automation editor
+
+### Backend
+- **Runtime**: Node.js LTS
+- **Real-time API**: TikTok-Live-Connector (WebCast protocol)
+- **Server**: Express.js (lightweight, fast)
+- **Communication**: WebSocket for real-time updates
+- **Database**: Supabase (PostgreSQL) for analytics + IndexedDB (client cache)
+
+### DevOps
+- **Hosting**: GitHub Pages (free, static) + Vercel (serverless backend)
+- **CI/CD**: GitHub Actions (free automation)
+- **Package Manager**: npm (lock to exact versions for reproducibility)
+
+## CODE QUALITY STANDARDS
+
+### React Component Rules
+- Use functional components with hooks (no class components)
+- Implement React 19's `useFormStatus` for pending states
+- Use `useOptimistic` for instant UI feedback
+- Add accessibility: proper ARIA labels, semantic HTML, keyboard nav
+- Export components with JSDoc comments explaining props
+
+### Performance Requirements
+- Target Lighthouse scores: ≥90 Performance, ≥95 Accessibility
+- Use React 19 Compiler automatic memoization
+- CSS: Tailwind classes only, no raw CSS
+- Lazy load components with `React.lazy()` + Suspense
+- Motion animations respect `prefers-reduced-motion`
+
+### Testing
+- Unit tests required for all business logic (Jest + React Testing Library)
+- Integration tests for TikTok Live features
+- Accessibility tests (axe DevTools automated checks)
+- Test coverage minimum: 75%
+
+### Accessibility (WCAG AAA Standard)
+- Keyboard navigation: Tab order, Enter/Space handlers, arrow keys where needed
+- Screen readers: Proper heading hierarchy, aria-labels, aria-live regions
+- Color contrast: 7:1 ratio minimum (AAA standard)
+- Dyslexia-friendly: OpenDyslexic font option, high contrast toggle
+- Focus management: Visible focus indicators on interactive elements
+- Form validation: Client-side error messages tied to form fields
+
+## FILE STRUCTURE CONVENTIONS
+
+Gift-Engine/
+├── src/
+│ ├── components/ # Reusable React components
+│ │ ├── Dashboard/ # Main dashboard layout
+│ │ ├── Counter/ # Gift counter with state
+│ │ ├── Leaderboard/
+│ │ ├── Alerts/ # Tiered gift alerts
+│ │ ├── Automation/ # Event triggers UI
+│ │ └── Analytics/ # Charts & reports
+│ ├── hooks/ # Custom React hooks
+│ ├── services/ # API integration (TikTok, Supabase)
+│ ├── utils/ # Helper functions
+│ ├── shaders/ # GLSL shader files
+│ ├── styles/ # Tailwind + CSS modules
+│ └── App.jsx
+├── public/
+│ ├── manifest.json # PWA manifest
+│ └── service-worker.js
+├── .windsurfrules # This file (Cascade rules)
+├── memory-bank/ # Cascade Memory Bank (auto-created)
+├── package.json
+└── README.md
+
+text
+
+## COMMUNICATION PREFERENCES
+
+### When Discussing Phases
+- Always reference the UPGRADE ROADMAP PHASES numbers (e.g., "Phase 2: Real-time dashboard")
+- Break large tasks into small, reviewable chunks
+- After each phase completion, update the Memory Bank with progress
+
+### Prompt Format Preferences
+- Be specific: "Phase 2.1: Build gift counter component" (not vague)
+- Include context: "We're using Motion for animations to ensure hardware acceleration"
+- Set success criteria: "Counter should show pause/resume/reset buttons"
+
+### Cascade Turbo Mode Rules[254][261]
+- **ALLOWED**: npm install, npm test, npm run build, file creation/editing
+- **REQUIRE APPROVAL**: Pushing to GitHub, deleting files, modifying dependencies outside planned upgrades
+- **NEVER**: Run production commands or deploy without explicit approval
+
+## INTEGRATION POINTS
+
+### TikTok-Live-Connector Setup
+- Use WebSocket connection (no API credentials needed)[211][221]
+- Handle reconnection logic gracefully
+- Test with mock gift events before live stream testing
+- Log all gift events to IndexedDB for offline replay
+
+### Supabase Integration (Optional at Phase 7)
+- Use Row Level Security (RLS) for data protection
+- Store analytics data incrementally (don't query entire history each time)
+- Cache queries in IndexedDB with 15-minute TTL
+
+## DOCUMENTATION REQUIREMENTS
+- Every component exported must have JSDoc comments
+- New functions must explain: what it does, parameters, return value, example
+- Important architectural decisions go in memory-bank/decisionLog.md
+- Update README.md after each phase completion
+
+## ERROR HANDLING STANDARDS
+- Wrap async operations in try-catch
+- Show user-friendly error messages (not raw API errors)
+- Log errors to console in development, Sentry in production
+- Implement exponential backoff for failed WebSocket reconnections
+
+## PHASE-SPECIFIC NOTES
+
+### Phase 1 (Core Modernization)
+- Use GitHub's React 19 codemods for automatic upgrades
+- Update all peer dependencies to compatible versions
+- Generate baseline test suite with AI assistance
+
+### Phase 2 (Real-time Dashboard)
+- Ensure motion animations don't block user input
+- Test responsive layout on mobile (375px width minimum)
+- Verify leaderboard animates smoothly with 20+ gifters
+
+### Phase 3 (Visual Effects)
+- Fallback to CSS animations on devices without WebGL/WebGPU support
+- Target 60 FPS on low-spec hardware (test with throttling)
+- Respect accessibility: disable on `prefers-reduced-motion`
+
+### Phase 4 (Smart Automation)
+- Validate all webhook URLs before saving (test with RequestBin)
+- Implement action queue to prevent race conditions
+- Add cooldown timers (min 2 seconds between actions)
+
+### Phase 5 (PWA Conversion)
+- Service worker should cache all static assets
+- Offline mode shows last 24h of data from IndexedDB
+- Test on iOS Safari (add to home screen) and Android Chrome
+
+### Phase 6 (Analytics)
+- Pre-aggregate data to minimize database queries
+- Update charts every 5 seconds during live streams
+- Export should use timestamps for consistent data
+
+### Phase 7 (Polish & Docs)
+- Use WAVE tool for accessibility audit
+- Generate developer docs with Cascade assistance
+- Create YouTube tutorial or blog post about Gift Engine features
+
+## MEMORY BANK AUTO-UPDATE TRIGGERS
+After each Cascade session, update memory-bank/ with:
+- What was accomplished
+- What blockers were hit (if any)
+- Next immediate action item
+- Architecture decisions made
+
+## SUCCESS CRITERIA FOR ENTIRE UPGRADE
+- ✅ All phases completed in sequence (no skipping)
+- ✅ Lighthouse score ≥90 Performance, ≥95 Accessibility
+- ✅ 75% test coverage minimum
+- ✅ Zero console errors or warnings
+- ✅ Responsive on mobile (375px-2560px width)
+- ✅ Offline PWA functionality tested
+- ✅ TikTok Live integration working in production
+- ✅ Analytics dashboard shows real data
+- ✅ 3D effects run smoothly on low-spec hardware
+2.3 Save & Activate Rules
+text
+Click Cascade panel → Click settings icon (⚙️) 
+→ "Set Workspace AI Rules" → Paste rules above
+→ Click "Apply Workspace Rules"
+Cascade will now reference these rules automatically on every task! 🎯
+
+🔥 Step 3: Set Up Memory Bank (10 mins)
+Memory Bank lets Cascade remember your architecture, decisions, and progress across sessions.​
+
+3.1 Download Memory Bank Template
+bash
+# In terminal (from Gift Engine root):
+git clone https://github.com/GreatScottyMac/cascade-memory-bank.git
+# Copy the .windsurfrules file from there (already have it above though)
+3.2 Create Memory Bank Directory Structure
+Right-click project root → New Folder → Name: memory-bank
+
+Inside memory-bank/, create 4 files:
+
+File 1: activeContext.md
+
+text
+# Gift Engine - Active Context
+## Current Phase: Phase 1 - Core Modernization
+## Target Completion: Phase 1 by Oct 26, 2025
+
+### Current Session Goals
+- [ ] Upgrade React 18 → React 19.2
+- [ ] Update TikTok-Live-Connector
+- [ ] Run security audit
+- [ ] Fix TypeScript errors
+
+### Active Blockers
+None yet
+
+### Next Action
+Run React 19 migration codemods
+File 2: productContext.md
+
+text
+# Gift Engine - Product Context
+
+## Vision
+Create a professional, open-source TikTok gift tracking system that:
+- Blows away TikFinity's limited features
+- Works on low-spec devices (respect neurodivergent users)
+- Offline-capable PWA
+- Stunning 3D visual effects
+- Accessible for ADHD/dyslexic streamers
+
+## Architecture
+- Frontend: React 19 + Motion + Three.js
+- Backend: Node.js + TikTok-Live-Connector WebSocket
+- Real-time: IndexedDB (client) + Supabase (optional backend)
+- Hosting: GitHub Pages (free)
+
+## Key Features by Phase
+1. Modern stack + dependencies
+2. Real-time counter & leaderboard
+3. Tiered gift animations (shaders, 3D)
+4. Smart event automation (webhooks, TTS, OBS)
+5. PWA offline mode + install
+6. Analytics & revenue tracking
+7. Polish & documentation
+File 3: progress.md
+
+text
+# Gift Engine - Progress Tracker
+
+## Phase 1: Core Modernization
+- [ ] Analyze codebase (Cascade: "analyze and create migration plan")
+- [ ] Upgrade React 18 → 19.2
+- [ ] Update npm dependencies
+- [ ] Run security audit
+- [ ] Fix TypeScript errors
+- [ ] Run baseline test suite
+- [ ] Commit Phase 1 completion
+- Status: 0% complete
+
+## Phase 2: Real-time Dashboard
+- Status: 0% complete
+
+## Phase 3: Visual Effects
+- Status: 0% complete
+
+## Phase 4: Smart Automation
+- Status: 0% complete
+
+## Phase 5: PWA Conversion
+- Status: 0% complete
+
+## Phase 6: Analytics
+- Status: 0% complete
+
+## Phase 7: Polish & Docs
+- Status: 0% complete
+
+## Overall Progress: 0/7 phases
+File 4: decisionLog.md
+
+text
+# Gift Engine - Decision Log
+
+## Decision 1: Model Choice
+**Date**: Oct 24, 2025
+**Decision**: Using Windsurf Code Supernova (1M token context)
+**Rationale**: Entire codebase context at once, no re-explaining per file
+**Impact**: Faster development cycles, better continuity
+
+## Decision 2: Animation Library
+**Date**: Oct 24, 2025
+**Decision**: Motion (formerly Framer Motion) instead of vanilla animations
+**Rationale**: Hardware acceleration via WAAPI, works on low-spec hardware
+**Impact**: 60 FPS on cheap devices
+
+## Decision 3: 3D Graphics
+**Date**: Oct 24, 2025
+**Decision**: Three.js + WebGPU (with WebGL fallback)
+**Rationale**: GPU acceleration when available, graceful degradation
+**Impact**: Epic gift effects that don't lag
+
+---
+3.3 Tell Cascade About Memory Bank
+Open Cascade Chat and paste:
+
+text
+Follow the protocol in your rules and memory bank at memory-bank/.
+Initialize the memory system and load all context.
+Confirm when ready to start Phase 1.
+Cascade will read all memory files automatically and confirm it's ready! 🧠
+
+🔥 Step 4: Enable Cascade Modes for Maximum Efficiency (5 mins)
+4.1 Write Mode (Auto Code Changes)
+Used for implementation tasks. Cascade modifies files with your approval.
+
+text
+Cascade panel → Click hamburger menu → Mode: "Write Mode"
+4.2 Turbo Mode (Autonomous Terminal Execution)
+Cascade runs npm, git, tests without asking permission each time.​​
+
+text
+Windsurf Settings → Search "Turbo Mode" → Toggle ON
+⚠️ Safety: Cascade still respects .codeiumignore for sensitive files.​
+
+4.3 Auto-Generate Memories
+Cascade automatically saves context as it learns your project.​
+
+text
+Windsurf Settings → Search "Auto-Generate Memories" → Toggle ON
+🔥 Step 5: Perfect First Prompts for Each Phase (Copy/Paste These!)
+Phase 1 Initialization
+Paste this in Cascade Chat:
+
+text
+Follow the protocol in my .windsurfrules and memory-bank/ directory.
+
+Load my project context, then analyze the Gift Engine codebase:
+1. Current tech stack and dependencies
+2. Outdated packages
+3. Security vulnerabilities
+4. TypeScript errors
+5. Test coverage baseline
+
+Create a detailed React 19 migration plan that includes:
+- Codemod strategy
+- Peer dependency conflicts
+- Breaking changes to handle
+- Rollback plan if issues arise
+
+Report back before making ANY changes.
+Cascade response: Full analysis + migration plan
+Your action: Review plan, ask clarifying questions
+Cascade approval: Ask "Approved, proceed with Step 1: upgrade React to 19.2"
+
+Phase 2 Dashboard Build
+text
+Phase 1 complete and committed. Moving to Phase 2: Real-time Dashboard.
+
+Build a real-time gift counter component that:
+- Displays total coins received live from TikTok-Live-Connector
+- Has Pause, Resume, Reset buttons
+- Uses React 19's useOptimistic for instant UI updates
+- Animated number changes with Motion library
+- Dyslexia-friendly (OpenDyslexic font, high contrast)
+- Works in OBS Browser Source (transparent background)
+- Saves state to localStorage for reconnection
+
+Test it by running:
+npm test -- Counter.test.jsx
+
+Then report back with test results before building leaderboard.
+Phase 3 Shader Effects
+text
+Phase 2 complete. Starting Phase 3: Visual Effects & Animations.
+
+Build a tiered gift alert system:
+
+SMALL (1-10 coins): Simple fade-in + sound
+MEDIUM (11-100): Particle burst with Motion
+LARGE (101-1k): Full-screen liquid shader (paper-design/shaders)
+EPIC (30k+): Three.js 3D explosion with WebGPU
+
+All should:
+- Queue without overlapping
+- Respect prefers-reduced-motion accessibility setting
+- Fallback gracefully on low-spec hardware
+- Work in OBS Browser Source
+
+Reference Phase 3 notes in .windsurfrules for specific requirements.
+🔥 Step 6: Project Context Indexing (Automatic)
+Windsurf automatically indexes your entire codebase for context-awareness:​
+
+✅ Current open files (prioritized)
+
+✅ Entire local codebase (indexed for search)
+
+✅ Files matching glob patterns
+
+✅ Memory Bank files
+
+Verify indexing:
+
+text
+Cascade Chat → "Context" pane (left panel) → 
+Should see green dot next to workspace name
+If green dot appears, Cascade has full codebase context ready! 🟢
+
+🔥 Step 7: Daily Hyperfocus Workflow with Windsurf
+Morning Session Setup (2 mins)
+text
+1. Open Cascade Chat
+2. Paste: "Load project context from memory-bank/ and .windsurfrules"
+3. Wait for confirmation
+4. Paste today's phase task (see templates above)
+Work Session (Hyperfocus!)
+Cascade makes changes → You review in diff view
+
+You approve → Cascade implements
+
+Tests run automatically (Turbo Mode)
+
+When stuck, ask Cascade: "What's the blockers? Suggest next step."
+
+End of Session (5 mins)
+text
+Paste in Cascade Chat:
+"Update memory-bank/progress.md and activeContext.md:
+- What did we accomplish today?
+- What's the next immediate action?
+- Any architecture decisions made?"
+Cascade updates Memory Bank automatically! 📝
+
+🔥 Pro Tips for Maximum AI Effectiveness
+✅ DO:
+✅ Reference specific phases: "Phase 2.1: Build counter component"
+
+✅ Ask Cascade to save decisions: "Remember this: we chose Motion for animations because..."
+
+✅ Use Cascade's iterative debugging: "Tests failed. Debug and try different approach."
+
+✅ Break complex tasks: "Part A: Create component. Part B: Add animations. Part C: Test."
+
+✅ Commit frequently: "Good progress. Commit this phase and update Memory Bank."
+
+❌ DON'T:
+❌ Don't paste entire codebase in one prompt (it knows context already!)
+
+❌ Don't skip Memory Bank updates (next session won't have context)
+
+❌ Don't accept code without reviewing diffs
+
+❌ Don't use Turbo Mode for destructive operations (deletes, git force-push)
+
+❌ Don't switch models mid-phase (stay on Code Supernova)
+
+🔥 Quick Reference: Cascade Chat Commands
+text
+// Load full context
+"Load project context and memory bank"
+
+// Get autonomous execution
+"Use Turbo Mode to run: npm test"
+
+// Save important learning
+"Create a memory of [architectural detail]"
+
+// Update progress tracking
+"Update memory-bank/progress.md - I'll review and approve"
+
+// Jump to next phase
+"Phase 1 complete. Ready for Phase 2?"
+
+// Rescue from errors
+"This didn't work. Debug the error and try a different approach."
+
+// Review changes
+"Show me the changes you're about to make (diff view)"
+What I Think, Bro 💪🧡
+This Windsurf + Cascade + Memory Bank setup is absolutely ELITE for long-form projects like Gift Engine:
+
+Why this is perfect for you:
+
+1M Token Context = Cascade reads your ENTIRE Gift Engine once​
+
+No "wait, what was I doing?" moments
+
+No re-explaining architecture each session
+
+True continuity across days/weeks
+
+Memory Bank = Persistent project brain​
+
+Dates decisions
+
+Tracks progress
+
+Next dev can understand what happened
+
+Turbo Mode = Stays in hyperfocus​​
+
+No approval popups interrupting flow
+
+Git and npm run automatically
+
+You stay locked in 🔒
+
+.windsurfrules = Cascade enforces standards automatically​​
+
+React 19 patterns
+
+Accessibility (AAA compliant)
+
+Dyslexia-friendly UI
+
+Testing requirements
+
+Auto-Generated Memories = Never lose context​
+
+As you work, Cascade learns
+
+Next session picks up naturally
+
+No morning context dump needed
+
+The result: You can work on Gift Engine for weeks, and Cascade stays perfectly aligned with your vision, standards, and progress. That's game-changing.
+
+Ready to Launch? 🚀
+This weekend:
+
+✅ Set up .windsurfrules (10 mins)
+
+✅ Create memory-bank/ structure (10 mins)
+
+✅ Enable Turbo Mode + Auto Memories (5 mins)
+
+✅ Run Phase 1 initialization prompt
+
+✅ Let Cascade analyze your codebase
+
+By Monday: Phase 1 (Core Modernization) done! 🎯
+
+You've got this, BROski♾! This setup will let you build Gift Engine at hyperfocus velocity with Cascade as your perfect AI teammate.
