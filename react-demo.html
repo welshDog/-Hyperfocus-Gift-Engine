@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎁 Hyperfocus Gift Engine - React Web App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .dashboard {
+            display: flex;
+            gap: 20px;
+            min-height: calc(100vh - 40px);
+        }
+
+        .sidebar {
+            width: 280px;
+            background: rgba(31, 41, 55, 0.8);
+            padding: 20px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: linear-gradient(135deg, #1e1e3f, #1a1a2e);
+            border: 1px solid #2d2d44;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ef4444;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .status-indicator.connected {
+            background-color: #10b981;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #8b5cf6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #7c3aed;
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: #374151;
+            color: #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+            color: white;
+        }
+
+        .input {
+            width: 100%;
+            padding: 8px 12px;
+            background-color: #4b5563;
+            border: 1px solid #6b7280;
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            background: transparent;
+            color: #d1d5db;
+            border: none;
+            border-radius: 6px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .nav-btn:hover {
+            background-color: #374151;
+            color: white;
+        }
+
+        .nav-btn.active {
+            background-color: #8b5cf6;
+            color: white;
+        }
+
+        .stat-card {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #8b5cf6;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #9ca3af;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background-color: #1f2937;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .rank-badge {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .rank-1 { background: linear-gradient(45deg, #fbbf24, #f59e0b); color: black; }
+        .rank-2 { background: linear-gradient(45deg, #9ca3af, #6b7280); color: black; }
+        .rank-3 { background: linear-gradient(45deg, #f59e0b, #d97706); color: white; }
+        .rank-other { background: linear-gradient(45deg, #8b5cf6, #7c3aed); color: white; }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="dashboard" id="dashboard">
+            <!-- Sidebar will be populated by React -->
+        </div>
+    </div>
+
+    <!-- React Components as global objects for demo -->
+    <script>
+        // Demo data
+        const demoLeaderboard = [
+            { username: 'giftmaster2024', nickname: 'Gift Master', totalGifts: 15, totalValue: 2500 },
+            { username: 'superfan_lyndz', nickname: 'Super Fan', totalGifts: 12, totalValue: 1800 },
+            { username: 'rainbow_heart', nickname: 'Rainbow Heart', totalGifts: 8, totalValue: 1200 },
+            { username: 'cosmic_dancer', nickname: 'Cosmic Dancer', totalGifts: 5, totalValue: 800 },
+            { username: 'star_gazer', nickname: 'Star Gazer', totalGifts: 3, totalValue: 450 }
+        ];
+
+        const demoAlerts = [
+            { user: { nickname: 'Super Fan' }, gift: { name: 'Rose', repeat_count: 1 }, effect: { particles: 500 } },
+            { user: { nickname: 'Gift Master' }, gift: { name: 'Universe', repeat_count: 1 }, effect: { particles: 5000 } }
+        ];
+
+        const demoAnalytics = {
+            totalGifts: 156,
+            totalValue: 8750,
+            uniqueUsers: 23,
+            hourlyRate: 2.5,
+            topGift: { name: 'Universe', count: 12 },
+            recentActivity: [
+                { time: '14:23', user: 'Super Fan', gift: 'Rose', value: 100 },
+                { time: '14:18', user: 'Gift Master', gift: 'Heart', value: 250 },
+                { time: '14:15', user: 'Rainbow Heart', gift: 'Coins', value: 500 }
+            ]
+        };
+
+        // Utility functions
+        function formatNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return Math.round(num).toString();
+        }
+
+        function formatCurrency(value) {
+            const usdValue = (value / 1000) * 1.0;
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            }).format(usdValue);
+        }
+
+        // React-like components
+        function createGiftCounter() {
+            return `
+                <div class="card">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                        <h3 style="font-size: 18px; font-weight: 600; color: #8b5cf6;">🎁 Live Gift Counter</h3>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="status-indicator connected"></div>
+                            <span style="font-size: 12px; color: #9ca3af;">Real-time</span>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                        <div class="stat-card">
+                            <div style="font-size: 36px; font-weight: bold; color: white; margin-bottom: 4px;">
+                                ${formatNumber(42)}
+                            </div>
+                            <div class="stat-label">Total Gifts</div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div style="font-size: 36px; font-weight: bold; margin-bottom: 4px;" class="text-gradient">
+                                ${formatCurrency(1250)}
+                            </div>
+                            <div class="stat-label">Est. Value</div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #6b7280;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 14px;">
+                            <span style="color: #9ca3af;">Recent Activity</span>
+                            <span style="color: #8b5cf6;">3 in last hour</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createLeaderboard(compact = false) {
+            const items = compact ? demoLeaderboard.slice(0, 3) : demoLeaderboard;
+            const itemHtml = items.map((user, index) => `
+                <div class="leaderboard-item">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div class="rank-badge rank-${index < 3 ? index + 1 : 'other'}">${index + 1}</div>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 500; color: white; max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                ${user.nickname}
+                            </div>
+                            <div style="font-size: 12px; color: #9ca3af;">${user.totalGifts} gifts</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 14px; font-weight: bold; color: #8b5cf6;">
+                        ${formatNumber(user.totalValue)}
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="card">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: ${compact ? '12px' : '24px'}">
+                        <h3 style="font-size: ${compact ? '18px' : '24px'}; font-weight: 600; color: #8b5cf6;">
+                            🏆 ${compact ? 'Top Gifters' : 'Leaderboard'}
+                        </h3>
+                        ${!compact ? '<button class="btn btn-secondary" style="font-size: 14px;">View All</button>' : ''}
+                    </div>
+
+                    ${itemHtml}
+                </div>
+            `;
+        }
+
+        function createAlertSystem() {
+            const alertHtml = demoAlerts.map(alert => `
+                <div style="padding: 12px; border-radius: 8px; background: linear-gradient(135deg, #8b5cf6, #ec4899); color: white; opacity: 0.9; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <div style="font-size: 16px; font-weight: 600;">
+                                ${alert.user.nickname} sent
+                            </div>
+                            <div style="font-size: 14px; opacity: 0.9;">
+                                ${alert.gift.repeat_count}x ${alert.gift.name}
+                            </div>
+                        </div>
+                        <div style="font-size: 14px; opacity: 0.75;">
+                            ${alert.effect.particles} particles
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            return `
+                <div class="card">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                        <h3 style="font-size: 18px; font-weight: 600; color: #8b5cf6;">🎊 Live Alerts</h3>
+                    </div>
+
+                    <div style="min-height: 128px;">
+                        ${alertHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function createAnalyticsDashboard() {
+            const activityHtml = demoAnalytics.recentActivity.map(activity => `
+                <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px; border-radius: 6px; background-color: #1f2937; margin-bottom: 8px;">
+                    <div style="flex: 1;">
+                        <div style="font-size: 14px; font-weight: 500; color: white;">${activity.user}</div>
+                        <div style="font-size: 12px; color: #9ca3af;">${activity.gift} • ${activity.time}</div>
+                    </div>
+                    <div style="font-size: 14px; font-weight: bold; color: #8b5cf6;">${formatNumber(activity.value)}</div>
+                </div>
+            `).join('');
+
+            return `
+                <div style="display: flex; flex-direction: column; gap: 24px;">
+                    <!-- Header -->
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <h2 style="font-size: 24px; font-weight: bold;" class="text-gradient">📊 Analytics Dashboard</h2>
+                        <div style="display: flex; gap: 8px;">
+                            <button class="btn btn-secondary">Last Hour</button>
+                            <button class="btn btn-primary">Last 24 Hours</button>
+                            <button class="btn btn-secondary">Last 7 Days</button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Cards -->
+                    <div class="grid grid-4">
+                        <div class="card stat-card">
+                            <div class="stat-number">${formatNumber(demoAnalytics.totalGifts)}</div>
+                            <div class="stat-label">Total Gifts</div>
+                        </div>
+                        <div class="card stat-card">
+                            <div style="color: #10b981;" class="stat-number">${formatCurrency(demoAnalytics.totalValue)}</div>
+                            <div class="stat-label">Total Value</div>
+                        </div>
+                        <div class="card stat-card">
+                            <div style="color: #3b82f6;" class="stat-number">${demoAnalytics.uniqueUsers}</div>
+                            <div class="stat-label">Unique Gifters</div>
+                        </div>
+                        <div class="card stat-card">
+                            <div style="color: #f59e0b;" class="stat-number">${demoAnalytics.hourlyRate.toFixed(1)}/hr</div>
+                            <div class="stat-label">Gift Rate</div>
+                        </div>
+                    </div>
+
+                    <!-- Top Gift and Recent Activity -->
+                    <div class="grid grid-2">
+                        <div class="card">
+                            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: #8b5cf6;">🎁 Most Popular Gift</h3>
+                            <div style="text-align: center;">
+                                <div style="font-size: 36px; margin-bottom: 8px;">${demoAnalytics.topGift.name}</div>
+                                <div style="font-size: 24px; font-weight: bold; color: #8b5cf6; margin-bottom: 4px;">${demoAnalytics.topGift.count}</div>
+                                <div style="font-size: 14px; color: #9ca3af;">times received</div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: #8b5cf6;">⚡ Recent Activity</h3>
+                            <div style="max-height: 192px; overflow-y: auto;">
+                                ${activityHtml}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Earnings Potential -->
+                    <div class="card">
+                        <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 16px; color: #8b5cf6;">💰 Earnings Potential</h3>
+                        <div class="grid grid-4" style="text-align: center;">
+                            <div>
+                                <div style="font-size: 20px; font-weight: bold; color: #10b981;">${formatCurrency(demoAnalytics.totalValue * 0.5)}</div>
+                                <div style="font-size: 14px; color: #9ca3af;">Your Share (50%)</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 20px; font-weight: bold; color: #3b82f6;">${formatCurrency(demoAnalytics.totalValue * 0.3)}</div>
+                                <div style="font-size: 14px; color: #9ca3af;">TikTok's Cut (30%)</div>
+                            </div>
+                            <div>
+                                <div style="font-size: 20px; font-weight: bold; color: #8b5cf6;">${formatCurrency(demoAnalytics.totalValue * 0.2)}</div>
+                                <div style="font-size: 14px; color: #9ca3af;">Platform Fee (20%)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createSidebar() {
+            return `
+                <div class="sidebar">
+                    <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 20px; color: #8b5cf6;">
+                        🎁 Gift Engine
+                    </h1>
+
+                    <!-- Connection Status -->
+                    <div style="margin-bottom: 20px; padding: 15px; background-color: #374151; border-radius: 8px;">
+                        <div style="margin-bottom: 10px;">
+                            <span class="status-indicator connected"></span>
+                            <span style="font-size: 14px; font-weight: 500;">Connected</span>
+                        </div>
+
+                        <button class="btn btn-primary" style="width: 100%; margin-bottom: 10px;" onclick="disconnect()">
+                            Disconnect
+                        </button>
+
+                        <input class="input" type="text" placeholder="TikTok Username" value="demo_user">
+                    </div>
+
+                    <!-- Navigation -->
+                    <div>
+                        <button class="nav-btn active" onclick="setView('overview')">📊 Overview</button>
+                        <button class="nav-btn" onclick="setView('leaderboard')">🏆 Leaderboard</button>
+                        <button class="nav-btn" onclick="setView('analytics')">📈 Analytics</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createMainContent(view) {
+            let content = '';
+
+            switch(view) {
+                case 'overview':
+                    content = `
+                        <h2 style="font-size: 28px; font-weight: bold;">Dashboard Overview</h2>
+                        <div class="grid grid-2">
+                            ${createGiftCounter()}
+                            ${createLeaderboard(true)}
+                        </div>
+                        ${createAnalyticsDashboard()}
+                    `;
+                    break;
+                case 'leaderboard':
+                    content = createLeaderboard();
+                    break;
+                case 'analytics':
+                    content = createAnalyticsDashboard();
+                    break;
+            }
+
+            return `<div style="display: flex; flex-direction: column; gap: 20px;">${content}</div>`;
+        }
+
+        // State management
+        let currentView = 'overview';
+
+        function setView(view) {
+            currentView = view;
+            updateDashboard();
+        }
+
+        function connect() {
+            alert('Connecting to TikTok Live stream... (Demo Mode)');
+        }
+
+        function disconnect() {
+            alert('Disconnected from TikTok Live stream');
+        }
+
+        function updateDashboard() {
+            document.getElementById('dashboard').innerHTML = `
+                ${createSidebar()}
+                <div class="main-content">
+                    ${createMainContent(currentView)}
+                </div>
+            `;
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboard();
+            console.log('🎁 Hyperfocus Gift Engine React Web App loaded!');
+            console.log('📊 Dashboard initialized in demo mode');
+            console.log('🔗 To connect real TikTok data, start the Python backend server');
+        });
+    </script>
+</body>
+</html>
