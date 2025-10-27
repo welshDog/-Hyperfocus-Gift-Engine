@@ -1,22 +1,21 @@
 import React, { useMemo } from 'react'
 
-function Leaderboard({ compact = false, gifts = [] }) {
+function Leaderboard({ compact = false, gifts = [], userXP = {} }) {
   const leaderboard = useMemo(() => {
-    // Calculate leaderboard from real gifts
-    const userTotals = gifts.reduce((acc, gift) => {
-      const username = gift.username || 'Anonymous'
-      if (!acc[username]) {
-        acc[username] = { totalGifts: 0, totalValue: 0, username, nickname: username }
-      }
-      acc[username].totalGifts += 1
-      acc[username].totalValue += gift.giftValue
-      return acc
-    }, {})
+    // Calculate leaderboard based on XP
+    const users = Object.entries(userXP).map(([username, data]) => ({
+      username,
+      nickname: username,
+      xp: data.xp,
+      badges: data.badges,
+      totalGifts: gifts.filter(g => g.username === username).length,
+      totalValue: gifts.filter(g => g.username === username).reduce((sum, g) => sum + g.giftValue, 0)
+    }));
 
-    return Object.values(userTotals)
-      .sort((a, b) => b.totalValue - a.totalValue)
-      .slice(0, compact ? 3 : 10)
-  }, [gifts, compact])
+    return users
+      .sort((a, b) => b.xp - a.xp)
+      .slice(0, compact ? 3 : 50); // Top 50 for full view
+  }, [gifts, userXP, compact]);
 
   const formatValue = (value) => {
     if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M'
@@ -46,9 +45,13 @@ function Leaderboard({ compact = false, gifts = [] }) {
               <div className="user-info">
                 <span className="rank">{getRankIcon(index)}</span>
                 <span className="username">{user.username}</span>
+                {user.badges.length > 0 && (
+                  <span className={`badge ${user.badges[0].toLowerCase()}`}>🏆</span>
+                )}
               </div>
               <div className="user-stats">
-                <span className="gift-count">{user.totalGifts}</span>
+                <span className="stat-value">{user.xp}</span>
+                <span className="stat-label">XP</span>
               </div>
             </div>
           ))}
@@ -78,16 +81,23 @@ function Leaderboard({ compact = false, gifts = [] }) {
               <div className="user-info">
                 <span className="username">{user.username}</span>
                 <span className="nickname">{user.nickname}</span>
+                {user.badges.length > 0 && (
+                  <div className="badges">
+                    {user.badges.map(badge => (
+                      <span key={badge} className={`badge ${badge.toLowerCase()}`}>🏆 {badge}</span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <div className="user-stats">
                 <div className="stat">
-                  <span className="stat-value">{user.totalGifts}</span>
-                  <span className="stat-label">Gifts</span>
+                  <span className="stat-value">{user.xp}</span>
+                  <span className="stat-label">XP</span>
                 </div>
                 <div className="stat">
-                  <span className="stat-value">{formatValue(user.totalValue)}</span>
-                  <span className="stat-label">Coins</span>
+                  <span className="stat-value">{user.totalGifts}</span>
+                  <span className="stat-label">Gifts</span>
                 </div>
               </div>
             </div>

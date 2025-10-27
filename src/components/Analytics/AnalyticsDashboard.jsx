@@ -59,15 +59,30 @@ function AnalyticsDashboard({ gifts = [] }) {
     return Math.round(num).toString()
   }
 
-  const formatCurrency = (value) => {
-    const usdValue = (value / 1000) * 1.0
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2
-    }).format(usdValue)
-  }
+  const exportToCSV = () => {
+    if (gifts.length === 0) return;
+
+    const headers = ['Timestamp', 'Username', 'Gift Name', 'Gift Value', 'Tier'];
+    const rows = gifts.map(gift => [
+      gift.timestamp.toISOString(),
+      gift.username,
+      gift.giftName,
+      gift.giftValue,
+      gift.tier
+    ]);
+
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(field => `"${field}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `gift-analytics-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
 
   return (
     <div className="analytics-dashboard">
@@ -83,6 +98,9 @@ function AnalyticsDashboard({ gifts = [] }) {
               {tf}
             </button>
           ))}
+          <button className="timeframe-btn export-btn" onClick={exportToCSV} disabled={gifts.length === 0}>
+            📊 Export CSV
+          </button>
         </div>
       </div>
 

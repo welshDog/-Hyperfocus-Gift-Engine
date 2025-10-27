@@ -18,26 +18,15 @@ function AlertSystem({ gifts = [] }) {
     }
   }, [gifts])
 
-  const getAlertColor = (giftName) => {
-    const colors = {
-      'Rose': 'from-pink-500 to-purple-500',
-      'Heart': 'from-red-500 to-pink-500',
-      'Coins': 'from-yellow-500 to-orange-500',
-      'Universe': 'from-purple-500 to-indigo-500',
-      'Galaxy': 'from-cyan-500 to-blue-500',
-      'TikTok Universe': 'from-purple-500 to-indigo-500',
-      'Lion': 'from-yellow-500 to-amber-500',
-      'Diamond Flight': 'from-gray-400 to-gray-600',
-      'Planet': 'from-orange-500 to-red-500',
-      'Airplane': 'from-blue-400 to-cyan-400',
-      'Mermaid': 'from-teal-500 to-cyan-500',
-      'Disco Ball': 'from-gray-400 to-gray-500',
-      'Money Rain': 'from-green-500 to-emerald-500',
-      'Confetti': 'from-pink-500 to-rose-500',
-      'I Love You': 'from-pink-500 to-red-500'
+  const getAnimationClass = (tier) => {
+    switch (tier) {
+      case 'small': return 'small';
+      case 'medium': return 'medium';
+      case 'large': return 'large';
+      case 'epic': return 'epic';
+      default: return '';
     }
-    return colors[giftName] || 'from-purple-500 to-pink-500'
-  }
+  };
 
   const formatCurrency = (value) => {
     const usdValue = (value / 1000) * 1.0
@@ -64,11 +53,18 @@ function AlertSystem({ gifts = [] }) {
           recentAlerts.map((gift, index) => (
             <div
               key={`${gift.id}-${index}`}
-              className={`alert-item ${getAlertColor(gift.giftName).replace('from-', '').replace(' to-', '-')}`}
+              className={`alert-item ${getAlertColor(gift.giftName).replace('from-', '').replace(' to-', '-')} ${getAnimationClass(gift.tier)}`}
             >
               <div className="alert-content">
                 <div className="alert-user">
                   <span className="username">{gift.username}</span>
+                  {userXP[gift.username] && userXP[gift.username].badges.length > 0 && (
+                    <span className="badges">
+                      {userXP[gift.username].badges.slice(0, 2).map(badge => (
+                        <span key={badge} className={`badge ${badge.toLowerCase().replace(' ', '-')}`}>🏆</span>
+                      ))}
+                    </span>
+                  )}
                   <span className="sent-text">sent</span>
                 </div>
                 <div className="alert-gift">

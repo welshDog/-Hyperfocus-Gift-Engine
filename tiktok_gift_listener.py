@@ -5,7 +5,7 @@ import json
 import websockets
 import logging
 from TikTokLive import TikTokLiveClient
-from TikTokLive.types import CommentEvent, ConnectEvent, DisconnectEvent, GiftEvent
+from TikTokLive.events import CommentEvent, ConnectEvent, DisconnectEvent, GiftEvent
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -155,7 +155,7 @@ class HyperfocusGiftEngine:
 # Usage example
 if __name__ == "__main__":
     # Replace with the TikTok username you want to monitor
-    USERNAME = "your_tiktok_username"  # Change this!
+    USERNAME = "example_username"  # Change to a live TikTok username
 
     engine = HyperfocusGiftEngine(USERNAME)
 

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 export const useTikTokLive = (username) => {
   const [gifts, setGifts] = useState([]);
@@ -105,6 +105,55 @@ export const useTikTokLive = (username) => {
     return (giftValues[giftName] || 1) * repeatCount;
   };
 
+  // Calculate XP and badges from gifts
+  const userXP = useMemo(() => {
+    const userGifts = {};
+    gifts.forEach(gift => {
+      const username = gift.username || 'Anonymous';
+      if (!userGifts[username]) {
+        userGifts[username] = [];
+      }
+      userGifts[username].push(gift);
+    });
+
+    return Object.entries(userGifts).reduce((acc, [username, userGiftsArray]) => {
+      const totalXP = userGiftsArray.reduce((sum, gift) => sum + gift.giftValue, 0);
+      const badges = [];
+
+      // XP-based badges
+      if (totalXP >= 1000) badges.push('Legendary');
+      if (totalXP >= 500) badges.push('Gold');
+      if (totalXP >= 100) badges.push('Silver');
+      if (totalXP >= 10) badges.push('Bronze');
+
+      // Achievement badges
+      if (userGiftsArray.length === 1) badges.push('First Gift');
+      if (userGiftsArray.length >= 1000) badges.push('Mega Supporter');
+      if (userGiftsArray.length >= 100) badges.push('Super Supporter');
+      if (userGiftsArray.length >= 50) badges.push('Top Gifter');
+      if (userGiftsArray.length >= 10) badges.push('Active Gifter');
+
+      // Combo badges
+      const recentGifts = userGiftsArray.filter(g => new Date() - g.timestamp < 30000); // Last 30s
+      if (recentGifts.length >= 5) badges.push('Combo Master');
+
+      // High value badges
+      const maxGift = userGiftsArray.reduce((max, g) => g.giftValue > max.giftValue ? g : max, userGiftsArray[0]);
+      if (maxGift && maxGift.giftValue >= 1000) badges.push('Big Spender');
+
+      // Battle completion badges (simplified - in real app you'd track this separately)
+      const giftCount = userGiftsArray.length;
+      if (giftCount >= 200) badges.push('Epic Champion');
+      else if (giftCount >= 100) badges.push('Diamond Warrior');
+      else if (giftCount >= 50) badges.push('Gold Warrior');
+      else if (giftCount >= 25) badges.push('Silver Warrior');
+      else if (giftCount >= 10) badges.push('Bronze Warrior');
+
+      acc[username] = { xp: totalXP, badges };
+      return acc;
+    }, {});
+  }, [gifts]);
+
   // Clear gifts history
   const clearGifts = useCallback(() => {
     setGifts([]);
@@ -114,6 +163,7 @@ export const useTikTokLive = (username) => {
     gifts,
     isConnected,
     error,
+    userXP,
     clearGifts
   };
 };
