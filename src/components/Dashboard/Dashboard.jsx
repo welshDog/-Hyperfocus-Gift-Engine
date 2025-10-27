@@ -8,6 +8,7 @@ import AnalyticsDashboard from '../Analytics/AnalyticsDashboard';
 import GiftGoalTracker from '../GiftGoalTracker/GiftGoalTracker';
 import TapBattle from '../TapBattle/TapBattle';
 import BROskiShop from '../BROskiShop/BROskiShop';
+import ConnectionStatus from '../ConnectionStatus';
 
 const Dashboard = () => {
   const [tiktokUsername, setTiktokUsername] = useState('');
@@ -16,9 +17,17 @@ const Dashboard = () => {
   const [view, setView] = useState('overview');
 
   // Connect to TikTok Live
-  const { gifts, isConnected, error, clearGifts, userXP, userCoins } = useTikTokLive(
-    isListening ? tiktokUsername : null
-  );
+  const { 
+    gifts, 
+    isConnected, 
+    error, 
+    clearGifts, 
+    userXP, 
+    userCoins, 
+    connectionStatus, 
+    reconnect, 
+    retryCount 
+  } = useTikTokLive(isListening ? tiktokUsername : null);
 
   const handleStartListening = useCallback(() => {
     if (tiktokUsername.trim()) {

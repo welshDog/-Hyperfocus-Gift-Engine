@@ -1,79 +1,172 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { useWebSocketQueue } from './useWebSocketQueue';
+import { logger } from '../utils/logger';
+
+const WS_URL = 'ws://localhost:8765';
+const PING_INTERVAL = 30000; // 30 seconds
 
 export const useTikTokLive = (username) => {
   const [gifts, setGifts] = useState([]);
-  const [isConnected, setIsConnected] = useState(false);
+  const [connectionStatus, setConnectionStatus] = useState('disconnected');
   const [error, setError] = useState(null);
-  const [ws, setWs] = useState(null);
+  const wsRef = useRef(null);
+  const reconnectAttempts = useRef(0);
+  const pingInterval = useRef(null);
+  const lastPingTime = useRef(0);
+  
+  // WebSocket queue for handling offline messages
+  const { enqueue: enqueueGift, flush: flushQueuedGifts, retryCount } = useWebSocketQueue(
+    useCallback(async (giftBatch) => {
+      // Process batch of gifts when connection is restored
+      setGifts(prev => [...giftBatch, ...prev].slice(0, 100));
+      return Promise.resolve();
+    }, [])
 
-  useEffect(() => {
+  const createGiftEvent = (data) => {
+    const giftValue = calculateGiftValue(data.gift.name, data.gift.repeat_count);
+    return {
+      id: `${data.msg_id || Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      username: data.user?.username || 'Anonymous',
+      giftName: data.gift.name,
+      giftValue,
+      diamondValue: Math.floor(giftValue / 100),
+      timestamp: new Date(),
+      tier: calculateGiftTier(giftValue),
+      repeatCount: data.gift.repeat_count || 1,
+      effect: data.effect
+    };
+  };
+
+  const handleReconnect = useCallback(() => {
+    if (reconnectAttempts.current >= 5) {
+      setError('Failed to connect after multiple attempts. Please refresh the page.');
+      setConnectionStatus('error');
+      return;
+    }
+
+    const delay = Math.min(1000 * Math.pow(2, reconnectAttempts.current), 30000);
+    reconnectAttempts.current += 1;
+    
+    logger.warn(`Reconnecting in ${delay}ms (attempt ${reconnectAttempts.current}/5)`);
+    setConnectionStatus(`reconnecting-${reconnectAttempts.current}`);
+    
+    setTimeout(() => {
+      if (wsRef.current?.readyState !== WebSocket.OPEN) {
+        connect();
+      }
+    }, delay);
+  }, [connect]);
+
+  const connect = useCallback(() => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) return;
     if (!username) return;
 
-    // Connect to your Python WebSocket backend
-    // Adjust port if your tiktok_gift_listener.py uses different port
-    const websocket = new WebSocket('ws://localhost:8765');
+    setConnectionStatus('connecting');
+    const ws = new WebSocket(WS_URL);
+    wsRef.current = ws;
 
-    websocket.onopen = () => {
-      console.log('✅ Connected to TikTok Gift Engine backend');
-      setIsConnected(true);
+    ws.onopen = () => {
+      logger.info('Connected to TikTok Gift Engine backend');
+      setConnectionStatus('connected');
+      reconnectAttempts.current = 0;
       setError(null);
 
-      // Send username to backend to start listening
-      websocket.send(JSON.stringify({
+      // Start ping interval
+      pingInterval.current = setInterval(() => {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: 'ping', timestamp: Date.now() }));
+          lastPingTime.current = Date.now();
+        }
+      }, PING_INTERVAL);
+
+      // Send username to backend
+      ws.send(JSON.stringify({
         type: 'connect',
         username: username
       }));
+
+      // Process any queued gifts
+      flushQueuedGifts();
     };
 
-    websocket.onmessage = (event) => {
+    ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        
+        // Handle pong response
+        if (data.type === 'pong') {
+          const latency = Date.now() - data.timestamp;
+          logger.debug(`Ping latency: ${latency}ms`);
+          return;
+        }
 
-        // Handle different event types from your Python backend
+        // Handle gift events
         if (data.event === 'gift_received') {
-          const giftEvent = {
-            id: Date.now() + Math.random(), // Unique ID
-            username: data.user.username,
-            giftName: data.gift.name,
-            giftValue: calculateGiftValue(data.gift.name, data.gift.repeat_count), // In coins
-            diamondValue: Math.floor(calculateGiftValue(data.gift.name, data.gift.repeat_count) / 100), // Convert to diamonds
-            timestamp: new Date(),
-            tier: calculateGiftTier(calculateGiftValue(data.gift.name, data.gift.repeat_count)),
-            repeatCount: data.gift.repeat_count || 1,
-            effect: data.effect
-          };
-
-          setGifts(prev => [giftEvent, ...prev].slice(0, 100)); // Keep last 100
+          const giftEvent = createGiftEvent(data);
+          if (connectionStatus === 'connected') {
+            setGifts(prev => [giftEvent, ...prev].slice(0, 100));
+          } else {
+            enqueueGift(giftEvent);
+          }
         } else if (data.event === 'stream_connected') {
-          console.log(`🎥 Connected to ${data.user}'s TikTok Live stream`);
+          logger.info(`Connected to ${data.user}'s TikTok Live stream`);
         } else if (data.event === 'comment') {
-          console.log(`💬 ${data.user}: ${data.message}`);
+          logger.debug(`Comment from ${data.user}: ${data.message}`);
         }
       } catch (err) {
-        console.error('Error parsing gift data:', err);
+        logger.error('Error processing message', err);
       }
     };
 
-    websocket.onerror = (err) => {
-      console.error('WebSocket error:', err);
-      setError('Connection failed. Is the Python backend running?');
-      setIsConnected(false);
+    ws.onerror = (error) => {
+      logger.error('WebSocket error', { error });
+      setConnectionStatus('error');
+      setError('Connection error. Attempting to reconnect...');
+      handleReconnect();
     };
 
-    websocket.onclose = () => {
-      console.log('❌ Disconnected from TikTok backend');
-      setIsConnected(false);
+    ws.onclose = (event) => {
+      logger.warn(`WebSocket closed: ${event.code} ${event.reason}`);
+      clearInterval(pingInterval.current);
+      
+      if (event.code !== 1000) { // Don't reconnect on normal closure
+        handleReconnect();
+      } else {
+        setConnectionStatus('disconnected');
+      }
     };
 
-    setWs(websocket);
-
-    // Cleanup on unmount
     return () => {
-      if (websocket.readyState === WebSocket.OPEN) {
-        websocket.close();
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.close(1000, 'Component unmounting');
+      }
+      clearInterval(pingInterval.current);
+    };
+  }, [username, enqueueGift, flushQueuedGifts, handleReconnect, connectionStatus]);
+
+  // Initial connection
+  useEffect(() => {
+    connect();
+    return () => {
+      if (wsRef.current) {
+        wsRef.current.close(1000, 'Component unmounting');
+        clearInterval(pingInterval.current);
       }
     };
-  }, [username]);
+  }, [connect]);
+
+  // Check for connection health
+  useEffect(() => {
+    const checkConnectionHealth = () => {
+      if (connectionStatus === 'connected' && Date.now() - lastPingTime.current > PING_INTERVAL * 1.5) {
+        logger.warn('No ping response, reconnecting...');
+        handleReconnect();
+      }
+    };
+
+    const healthCheckInterval = setInterval(checkConnectionHealth, 5000);
+    return () => clearInterval(healthCheckInterval);
+  }, [connectionStatus, handleReconnect]);
 
   // Calculate gift tier based on value (for visual effects)
   const calculateGiftTier = (coinValue) => {
@@ -104,6 +197,17 @@ export const useTikTokLive = (username) => {
     };
     return (giftValues[giftName] || 1) * repeatCount;
   };
+
+  // Expose connection status and reconnect method
+  const isConnected = connectionStatus === 'connected';
+  const reconnect = useCallback(() => {
+    reconnectAttempts.current = 0;
+    connect();
+  }, [connect]);
+
+  const clearGifts = useCallback(() => {
+    setGifts([]);
+  }, []);
 
   // Calculate XP and badges from gifts
   const userXP = useMemo(() => {
@@ -205,14 +309,16 @@ export const useTikTokLive = (username) => {
   }, [gifts]);
   const clearGifts = useCallback(() => {
     setGifts([]);
-  }, []);
 
   return {
     gifts,
     isConnected,
+    connectionStatus,
     error,
+    clearGifts,
     userXP,
     userCoins,
-    clearGifts
+    reconnect,
+    retryCount
   };
 };
