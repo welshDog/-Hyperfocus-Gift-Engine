@@ -154,7 +154,55 @@ export const useTikTokLive = (username) => {
     }, {});
   }, [gifts]);
 
-  // Clear gifts history
+  // Calculate BROski$ Coins from gifts with multipliers
+  const userCoins = useMemo(() => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const isPeakHour = (currentHour >= 19 && currentHour <= 23) || (currentHour >= 12 && currentHour <= 14); // 12-2PM or 7-11PM
+    const loyaltyMultiplier = isPeakHour ? 2 : 1;
+
+    const userGiftCounts = {};
+    gifts.forEach(gift => {
+      const username = gift.username || 'Anonymous';
+      if (!userGiftCounts[username]) {
+        userGiftCounts[username] = { giftCount: 0, totalValue: 0, referrals: 0 };
+      }
+      userGiftCounts[username].giftCount += 1;
+      userGiftCounts[username].totalValue += gift.giftValue;
+    });
+
+    return Object.entries(userGiftCounts).reduce((acc, [username, data]) => {
+      // Base coins: 1 coin per gift + bonus for value
+      let baseCoins = data.giftCount + Math.floor(data.totalValue / 100);
+
+      // Loyalty multiplier during peak hours
+      baseCoins *= loyaltyMultiplier;
+
+      // Referral bonus (simplified - in real app would track invites)
+      const referralBonus = data.referrals * 10;
+
+      // Achievement bonuses
+      let achievementBonus = 0;
+      if (data.giftCount >= 100) achievementBonus += 100; // Century Club
+      if (data.giftCount >= 50) achievementBonus += 50;  // Half Century
+      if (data.giftCount >= 25) achievementBonus += 25;  // Quarter Century
+      if (data.totalValue >= 5000) achievementBonus += 200; // High Roller
+
+      const totalCoins = baseCoins + referralBonus + achievementBonus;
+
+      acc[username] = {
+        coins: totalCoins,
+        baseCoins,
+        loyaltyMultiplier,
+        referralBonus,
+        achievementBonus,
+        giftCount: data.giftCount,
+        totalValue: data.totalValue,
+        isPeakHour
+      };
+      return acc;
+    }, {});
+  }, [gifts]);
   const clearGifts = useCallback(() => {
     setGifts([]);
   }, []);
@@ -164,6 +212,7 @@ export const useTikTokLive = (username) => {
     isConnected,
     error,
     userXP,
+    userCoins,
     clearGifts
   };
 };

@@ -1,21 +1,22 @@
 import React, { useMemo } from 'react'
 
-function Leaderboard({ compact = false, gifts = [], userXP = {} }) {
+function Leaderboard({ compact = false, gifts = [], userXP = {}, userCoins = {} }) {
   const leaderboard = useMemo(() => {
-    // Calculate leaderboard based on XP
+    // Calculate leaderboard based on XP and include coin data
     const users = Object.entries(userXP).map(([username, data]) => ({
       username,
       nickname: username,
       xp: data.xp,
       badges: data.badges,
+      coins: userCoins[username]?.coins || 0,
       totalGifts: gifts.filter(g => g.username === username).length,
       totalValue: gifts.filter(g => g.username === username).reduce((sum, g) => sum + g.giftValue, 0)
     }));
 
     return users
-      .sort((a, b) => b.xp - a.xp)
+      .sort((a, b) => b.coins - a.coins) // Sort by coins instead of XP for leaderboard
       .slice(0, compact ? 3 : 50); // Top 50 for full view
-  }, [gifts, userXP, compact]);
+  }, [gifts, userXP, userCoins, compact]);
 
   const formatValue = (value) => {
     if (value >= 1000000) return (value / 1000000).toFixed(1) + 'M'
@@ -50,8 +51,8 @@ function Leaderboard({ compact = false, gifts = [], userXP = {} }) {
                 )}
               </div>
               <div className="user-stats">
-                <span className="stat-value">{user.xp}</span>
-                <span className="stat-label">XP</span>
+                <span className="stat-value">{user.coins.toLocaleString()}</span>
+                <span className="stat-label">🪙</span>
               </div>
             </div>
           ))}
@@ -92,12 +93,12 @@ function Leaderboard({ compact = false, gifts = [], userXP = {} }) {
 
               <div className="user-stats">
                 <div className="stat">
-                  <span className="stat-value">{user.xp}</span>
-                  <span className="stat-label">XP</span>
+                  <span className="stat-value">{user.coins.toLocaleString()}</span>
+                  <span className="stat-label">BROski$</span>
                 </div>
                 <div className="stat">
-                  <span className="stat-value">{user.totalGifts}</span>
-                  <span className="stat-label">Gifts</span>
+                  <span className="stat-value">{user.xp}</span>
+                  <span className="stat-label">XP</span>
                 </div>
               </div>
             </div>
