@@ -272,7 +272,8 @@ export const useTikTokLive = ({ username }) => {
     
     // Connection
     isConnected: ['connected', 'authenticated'].includes(connectionStatus),
-    isConnecting: connectionStatus.startsWith('connecting') || connectionStatus.startsWith('reconnecting'),
+    isConnecting: connectionStatus.startsWith('connecting') || 
+                 connectionStatus.startsWith('reconnecting'),
     connectionStatus,
     
     // Methods

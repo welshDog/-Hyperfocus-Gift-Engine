@@ -1,0 +1,117 @@
+2025-10-28 00:34:42,246 - TikTokLive - ERROR - Error initializing TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 00:34:42,250 - TikTokLive - ERROR - Failed to initialize TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 00:34:42,253 - TikTokLive - ERROR - Unexpected error: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+Traceback (most recent call last):
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 401, in <module>
+    asyncio.run(main())
+  File "C:\Users\lyndz\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 384, in main
+    engine = HyperfocusGiftEngine(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 61, in __init__
+    self.client = self._initialize_tiktok_client()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 69, in _initialize_tiktok_client
+    client = TikTokLiveClient(
+             ^^^^^^^^^^^^^^^^^
+TypeError: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 00:34:52,405 - TikTokLive - ERROR - Error initializing TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 00:34:52,407 - TikTokLive - ERROR - Failed to initialize TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 00:34:52,409 - TikTokLive - ERROR - Unexpected error: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+Traceback (most recent call last):
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 401, in <module>
+    asyncio.run(main())
+  File "C:\Users\lyndz\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 384, in main
+    engine = HyperfocusGiftEngine(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 61, in __init__
+    self.client = self._initialize_tiktok_client()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 69, in _initialize_tiktok_client
+    client = TikTokLiveClient(
+             ^^^^^^^^^^^^^^^^^
+TypeError: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 00:36:20,395 - TikTokLive - DEBUG - Debug mode enabled
+2025-10-28 00:36:20,398 - TikTokLive - ERROR - Error initializing TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 00:36:20,401 - TikTokLive - ERROR - Failed to initialize TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 00:36:20,404 - TikTokLive - ERROR - Unexpected error: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+Traceback (most recent call last):
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 401, in <module>
+    asyncio.run(main())
+  File "C:\Users\lyndz\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 195, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\AppData\Local\Programs\Python\Python312\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\AppData\Local\Programs\Python\Python312\Lib\asyncio\base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 384, in main
+    engine = HyperfocusGiftEngine(
+             ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 61, in __init__
+    self.client = self._initialize_tiktok_client()
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 69, in _initialize_tiktok_client
+    client = TikTokLiveClient(
+             ^^^^^^^^^^^^^^^^^
+TypeError: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 02:21:25,394 - TikTokLive - DEBUG - Debug mode enabled
+2025-10-28 02:21:25,396 - TikTokLive - ERROR - Error initializing TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+Traceback (most recent call last):
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 73, in _initialize_tiktok_client
+    client = TikTokLiveClient(
+             ^^^^^^^^^^^^^^^^^
+TypeError: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 02:21:25,400 - TikTokLive - ERROR - 
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 73, in _initialize_tiktok_client
+    client = TikTokLiveClient(
+             ^^^^^^^^^^^^^^^^^
+
+2025-10-28 02:21:25,400 - TikTokLive - ERROR - Failed to initialize TikTok client: Failed to initialize TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 02:21:25,401 - TikTokLive - ERROR - Failed to initialize TikTok client. Make sure the username is correct and the user is live.
+2025-10-28 02:24:04,792 - TikTokLive - ERROR - Error initializing TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+Traceback (most recent call last):
+  File "c:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 73, in _initialize_tiktok_client
+    client = TikTokLiveClient(
+             ^^^^^^^^^^^^^^^^^
+TypeError: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 02:24:04,797 - TikTokLive - ERROR - 
+  File "c:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 73, in _initialize_tiktok_client
+    client = TikTokLiveClient(
+             ^^^^^^^^^^^^^^^^^
+
+2025-10-28 02:24:04,798 - TikTokLive - ERROR - Failed to initialize TikTok client: Failed to initialize TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'process_initial_data'
+2025-10-28 02:24:04,798 - TikTokLive - ERROR - Failed to initialize TikTok client. Make sure the username is correct and the user is live.
+2025-10-28 02:26:32,315 - TikTokLive - DEBUG - Debug mode enabled
+2025-10-28 02:26:32,315 - TikTokLive - ERROR - Error initializing TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'enable_websocket'
+Traceback (most recent call last):
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 73, in _initialize_tiktok_client
+    client = TikTokLiveClient(
+             ^^^^^^^^^^^^^^^^^
+TypeError: TikTokLiveClient.__init__() got an unexpected keyword argument 'enable_websocket'
+2025-10-28 02:26:32,320 - TikTokLive - ERROR - 
+  File "C:\Users\lyndz\Downloads\Gift Engine App\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 73, in _initialize_tiktok_client
+    client = TikTokLiveClient(
+             ^^^^^^^^^^^^^^^^^
+
+2025-10-28 02:26:32,320 - TikTokLive - ERROR - Failed to initialize TikTok client: Failed to initialize TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'enable_websocket'
+2025-10-28 02:26:32,320 - TikTokLive - ERROR - Failed to initialize TikTok client. Make sure the username is correct and the user is live.
