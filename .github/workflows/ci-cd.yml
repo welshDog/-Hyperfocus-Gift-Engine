@@ -1,0 +1,120 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: ./
+
+jobs:
+  test:
+    name: Test Suite
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install Dependencies
+      run: npm ci
+    
+    - name: Run Linter
+      run: npm run lint
+    
+    - name: Run Tests
+      run: npm test -- --coverage --runInBand
+    
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v4
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        file: ./coverage/lcov.info
+        fail_ci_if_error: false
+
+  build:
+    name: Build
+    needs: test
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js 20.x
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: Install Dependencies
+      run: npm ci
+    
+    - name: Build Project
+      run: npm run build
+    
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-artifact
+        path: dist/
+        retention-days: 5
+
+  deploy:
+    name: Deploy to Production
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: build-artifact
+        path: dist/
+    
+    - name: Deploy to Vercel
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        working-directory: ./
+        vercel-args: '--prod'
+
+  notify:
+    name: Notify Status
+    needs: [test, build, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Send Slack Notification
+      uses: rtCamp/action-slack-notify@v2
+      if: failure()
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_COLOR: '#FF0000'
+        SLACK_TITLE: 'CI/CD Pipeline Failed'
+        SLACK_MESSAGE: 'Job ${{ job }} failed in ${{ github.workflow }}. ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}'
+    
+    - name: Send Success Notification
+      if: success() && github.ref == 'refs/heads/main'
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK_URL }}
+        SLACK_COLOR: '#36a64f'
+        SLACK_TITLE: 'Deployment Successful'
+        SLACK_MESSAGE: 'Successfully deployed ${{ github.sha }} to production! 🚀'

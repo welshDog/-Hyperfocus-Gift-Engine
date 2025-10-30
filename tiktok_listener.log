@@ -115,3 +115,16 @@ TypeError: TikTokLiveClient.__init__() got an unexpected keyword argument 'enabl
 
 2025-10-28 02:26:32,320 - TikTokLive - ERROR - Failed to initialize TikTok client: Failed to initialize TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'enable_websocket'
 2025-10-28 02:26:32,320 - TikTokLive - ERROR - Failed to initialize TikTok client. Make sure the username is correct and the user is live.
+2025-10-28 22:17:03,083 - TikTokLive - ERROR - Error initializing TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'enable_websocket'
+Traceback (most recent call last):
+  File "C:\Users\lyndz\Downloads\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 73, in _initialize_tiktok_client
+    client = TikTokLiveClient(
+             ^^^^^^^^^^^^^^^^^
+TypeError: TikTokLiveClient.__init__() got an unexpected keyword argument 'enable_websocket'
+2025-10-28 22:17:03,087 - TikTokLive - ERROR - 
+  File "C:\Users\lyndz\Downloads\-Hyperfocus-Gift-Engine\tiktok_gift_listener.py", line 73, in _initialize_tiktok_client
+    client = TikTokLiveClient(
+             ^^^^^^^^^^^^^^^^^
+
+2025-10-28 22:17:03,087 - TikTokLive - ERROR - Failed to initialize TikTok client: Failed to initialize TikTok client: TikTokLiveClient.__init__() got an unexpected keyword argument 'enable_websocket'
+2025-10-28 22:17:03,088 - TikTokLive - ERROR - Failed to initialize TikTok client. Make sure the username is correct and the user is live.

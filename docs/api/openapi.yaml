@@ -1,0 +1,102 @@
+openapi: 3.0.0
+info:
+  title: Hyperfocus Gift Engine API
+  description: |
+    Interactive WebSocket API for real-time TikTok Live gift processing and visualization
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@hyperfocus.gg
+
+servers:
+  - url: wss://api.hyperfocus.gg/ws
+    description: Production WebSocket server
+  - url: ws://localhost:8000/ws
+    description: Local development server
+
+components:
+  schemas:
+    GiftEvent:
+      type: object
+      properties:
+        giftId:
+          type: string
+          format: uuid
+          description: Unique identifier for the gift event
+        giftType:
+          type: string
+          enum: ["rose", "heart", "universe", "coin"]
+          description: Type of gift received
+        quantity:
+          type: integer
+          minimum: 1
+          description: Number of gifts in this batch
+        sender:
+          $ref: '#/components/schemas/User'
+        timestamp:
+          type: string
+          format: date-time
+          description: When the gift was received
+    
+    User:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Platform-specific user ID
+        username:
+          type: string
+          description: User's display name
+        avatarUrl:
+          type: string
+          format: uri
+          description: URL to user's avatar image
+
+  messages:
+    GiftReceived:
+      name: gift:received
+      payload:
+        $ref: '#/components/schemas/GiftEvent'
+    
+    ConnectionAck:
+      name: connection:ack
+      payload:
+        type: object
+        properties:
+          sessionId:
+            type: string
+            format: uuid
+          serverTime:
+            type: string
+            format: date-time
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+
+paths:
+  /ws:
+    get:
+      tags:
+        - WebSocket
+      summary: Establish WebSocket connection
+      description: |
+        Initializes a WebSocket connection to receive real-time gift events.
+        Requires valid API key in headers.
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '101':
+          description: WebSocket connection established
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/messages/ConnectionAck'
+        '401':
+          description: Unauthorized - Invalid or missing API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'

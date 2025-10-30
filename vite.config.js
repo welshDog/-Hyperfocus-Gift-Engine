@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import { VitePWA } from '@vite-pwa-org/vite-plugin-pwa'
+import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
   plugins: [
@@ -18,9 +18,6 @@ export default defineConfig({
               expiration: {
                 maxEntries: 10,
                 maxAgeSeconds: 60 * 60 * 24 // 24 hours
-              },
-              cacheKeyWillBeUsed: async ({ request }) => {
-                return `${request.url}?${new Date().getDate()}`;
               }
             }
           }
@@ -63,8 +60,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          ui: ['framer-motion'],
-          utils: ['@vite-pwa-org/vite-plugin-pwa']
+          ui: ['framer-motion']
         }
       }
     }
