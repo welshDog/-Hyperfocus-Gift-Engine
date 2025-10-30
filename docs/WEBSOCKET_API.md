@@ -25,6 +25,7 @@ interface BaseMessage {
 ### 1. Connection Management
 
 #### `connection:init`
+
 **Direction**: Client → Server  
 **Description**: Initialize WebSocket connection with client information.
 
@@ -43,6 +44,7 @@ interface BaseMessage {
 ```
 
 #### `connection:ack`
+
 **Direction**: Server → Client  
 **Description**: Acknowledges successful connection initialization.
 
@@ -65,6 +67,7 @@ interface BaseMessage {
 ### 2. Heartbeat
 
 #### `heartbeat:ping`
+
 **Direction**: Server → Client  
 **Description**: Server heartbeat to check client connection.
 
@@ -80,6 +83,7 @@ interface BaseMessage {
 ```
 
 #### `heartbeat:pong`
+
 **Direction**: Client → Server  
 **Description**: Client response to heartbeat ping.
 
@@ -102,6 +106,7 @@ interface BaseMessage {
 ### 3. Gift Events
 
 #### `gift:received`
+
 **Direction**: Server → Client  
 **Description**: Notifies client about a new gift.
 
@@ -138,6 +143,7 @@ interface BaseMessage {
 ```
 
 #### `gift:ack`
+
 **Direction**: Client → Server  
 **Description**: Acknowledges receipt of a gift.
 
@@ -157,6 +163,7 @@ interface BaseMessage {
 ### 4. Stream Status
 
 #### `stream:status`
+
 **Direction**: Server → Client  
 **Description**: Updates about stream status.
 
@@ -181,6 +188,7 @@ interface BaseMessage {
 ## Error Handling
 
 ### `error`
+
 **Direction**: Both  
 **Description**: Error notification.
 

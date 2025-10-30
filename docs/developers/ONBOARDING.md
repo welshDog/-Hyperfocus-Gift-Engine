@@ -1,6 +1,6 @@
 # Developer Onboarding Guide
 
-## 🚀 Welcome to the Hyperfocus Gift Engine Team!
+## 🚀 Welcome to the Hyperfocus Gift Engine Team
 
 This guide will help you set up your development environment and get familiar with our codebase.
 
@@ -47,7 +47,7 @@ NODE_ENV=development
 
 ## 🏗️ Project Structure
 
-```
+```plaintext
 hyperfocus-gift-engine/
 ├── frontend/               # React frontend
 │   ├── src/
@@ -114,7 +114,7 @@ chore/description       # Maintenance tasks
 
 ### Commit Message Format
 
-```
+```commit
 <type>(<scope>): <subject>
 
 [optional body]
@@ -123,7 +123,8 @@ chore/description       # Maintenance tasks
 ```
 
 Example:
-```
+
+```commit
 feat(ui): add dark mode toggle
 
 - Add theme context
@@ -158,6 +159,6 @@ Closes #123
 - **#backend** - Backend-specific questions
 - **#urgent** - Production issues
 
-## 🎉 Congratulations!
+## 🎉 Congratulations
 
 You're all set to start contributing to the Hyperfocus Gift Engine!

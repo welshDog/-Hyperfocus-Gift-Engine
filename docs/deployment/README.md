@@ -1,6 +1,7 @@
 # Deployment Guide
 
 ## Table of Contents
+
 1. [Prerequisites](#prerequisites)
 2. [Local Development](#local-development)
 3. [Production Deployment](#production-deployment)
